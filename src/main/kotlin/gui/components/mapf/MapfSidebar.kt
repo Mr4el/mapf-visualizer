@@ -28,7 +28,6 @@ fun mapfSidebar(
     onUpdateAutoplaySpeed: (Int) -> Unit,
     onUpdateAllowSwapConflict: (Boolean) -> Unit,
     onUpdateAllowVertexConflict: (Boolean) -> Unit,
-    onUpdateAllowUsingVisitedCellsTwice: (Boolean) -> Unit,
     onUpdateState: (ClassicalMapf) -> Unit,
     onClearAll: () -> Unit,
     onSolverSelected: (AvailableSolver) -> Unit,
@@ -57,13 +56,6 @@ fun mapfSidebar(
                     isChecked = mapfState.allowVertexConflict,
                     enabled = !waitingForSolution,
                     onCheckedChange = onUpdateAllowVertexConflict,
-                )
-
-                checkBox(
-                    text = "Allow using visited cells",
-                    isChecked = mapfState.allowUsingVisitedCellsTwice,
-                    enabled = !waitingForSolution,
-                    onCheckedChange = onUpdateAllowUsingVisitedCellsTwice,
                 )
 
                 checkBox(

@@ -7,7 +7,7 @@ import problem.ClassicalMapf
 import problem.obj.Path
 import problem.obj.Path.Companion.getMakespan
 import problem.obj.Path.Companion.getSumOfCosts
-import problem.solver.Conflict
+import problem.solver.obj.Conflict
 import problem.solver.SolutionValidator.findFirstConflict
 import problem.solver.SolutionWithCost
 import problem.solver.Solver
@@ -22,7 +22,6 @@ class CBS(
         singleAgentSolver = SingleAgentAStarSolver(
             graph = mapfProblem.toGraph(),
             waitingActionsCountLimit = mapfProblem.waitingActionsCountLimit,
-            allowUsingVisitedCellsTwice = mapfProblem.allowUsingVisitedCellsTwice,
         )
     )
 
@@ -43,7 +42,7 @@ class CBS(
             val currentNode = openNodes.poll()
             processedStates++
 
-            if (processedStates % 10000 == 0) println(processedStates)
+            if (processedStates % 10000 == 0) println("Processed states: $processedStates")
 
             val conflict = currentNode.solution.findFirstConflict(
                 allowVertexConflict = mapfProblem.allowVertexConflict,

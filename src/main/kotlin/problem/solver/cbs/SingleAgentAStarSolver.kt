@@ -16,7 +16,6 @@ import kotlin.math.max
 class SingleAgentAStarSolver(
     private val graph: Graph,
     private val waitingActionsCountLimit: Int,
-    private val allowUsingVisitedCellsTwice: Boolean,
 ) {
     fun findPath(
         agent: Agent,
@@ -70,15 +69,14 @@ class SingleAgentAStarSolver(
 
                 val hasVertexConflict = vertexConflicts.containsVertex(vertexAtTimeStep)
                 val hasEdgeConflict = edgeConflicts.containsEdge(edgeAtTimeStep)
-                // Forbidding using already visited cells
-                val alreadyVisited = allowUsingVisitedCellsTwice && closedSet.contains(nextAStarVertexState)
+                val stateAlreadyProcessed = closedSet.contains(nextAStarVertexState)
                 val freeConflictingTargetCell = nextAStarVertexState.position.equal(agent.targetPosition)
                     && nextAStarVertexState.timeStep <= maxConflictTimeStep
-                if (hasVertexConflict || hasEdgeConflict || freeConflictingTargetCell || alreadyVisited) {
+                if (hasVertexConflict || hasEdgeConflict || freeConflictingTargetCell || stateAlreadyProcessed) {
                     return@forEach
                 }
 
-                if (nextAStarVertexState !in openSet && nextAStarVertexState.timeStep < graph.size()) {
+                if (nextAStarVertexState !in openSet && nextAStarVertexState !in closedSet && nextAStarVertexState.timeStep < graph.size()) {
                     cameFrom[nextAStarVertexState] = currentVertexState
                     queue.add(nextAStarVertexState)
                     openSet.add(nextAStarVertexState)

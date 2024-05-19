@@ -1,4 +1,4 @@
-package problem.solver
+package problem.solver.obj
 
 import gui.utils.EdgeConflict
 import gui.utils.VertexConflict

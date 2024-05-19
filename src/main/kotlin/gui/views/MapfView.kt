@@ -129,12 +129,6 @@ fun mapfView() {
         mapfState = mapfState.copy()
     }
 
-    fun updateAllowUsingVisitedCellsTwice(allowUsingVisitedCellsTwice: Boolean) {
-        mapfState.allowUsingVisitedCellsTwice = allowUsingVisitedCellsTwice
-        mapfState.resetMapfSolution()
-        mapfState = mapfState.copy()
-    }
-
     fun updateWaitingActionsCountLimit(waitingActionsCountLimit: Int) {
         mapfState.waitingActionsCountLimit = waitingActionsCountLimit
         mapfState.resetMapfSolution()
@@ -218,7 +212,6 @@ fun mapfView() {
                 waitingForSolution = mapfState.waitingForSolution,
                 onUpdateAllowSwapConflict = { updateAllowSwapConflict(it) },
                 onUpdateAllowVertexConflict = { updateAllowVertexConflict(it) },
-                onUpdateAllowUsingVisitedCellsTwice = { updateAllowUsingVisitedCellsTwice(it) },
                 onUpdateDraggableState = { isDraggableEnabled = it },
                 onUpdateWaitingActionsCountLimit = { updateWaitingActionsCountLimit(it) },
                 onUpdateAutoplaySpeed = { updateAutoplaySpeed(it) },

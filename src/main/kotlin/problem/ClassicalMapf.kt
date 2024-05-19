@@ -25,7 +25,6 @@ data class ClassicalMapf(
     var waitingActionsCountLimit: Int = 10,
     var allowVertexConflict: Boolean = false,
     var allowSwapConflict: Boolean = false,
-    var allowUsingVisitedCellsTwice: Boolean = true,
 
     val obstacles: MutableSet<Obstacle> = mutableSetOf(),
     var agentsWithPaths: MutableBasicSolution = mutableMapOf(),
