@@ -4,47 +4,37 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6ef6f74f-38e4-40fd-961f-0a4230341440" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/Constants.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/Buttons.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/Containers.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/FpsCounter.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/InputFields.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/AgentsData.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfGrid.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfNavbar.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/enums/AgentColor.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/enums/GridMode.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/style/Colors.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/utils/ColorPicker.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/utils/Utils.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/views/MapfView.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/problem/Agent.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/problem/ClassicalMapf.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/problem/Obstacle.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Path.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Point.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/icons/agent.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/icons/cross.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/icons/left_arrow.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/icons/obstacle.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/icons/pause.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/icons/play.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/icons/right_arrow.svg" afterDir="false" />
+    <list default="true" id="6ef6f74f-38e4-40fd-961f-0a4230341440" name="Changes" comment="Add CBS solver">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/exceptions/Exceptions.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/exceptions/ReachedWaitLimitException.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/Checkboxes.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/DropDowns.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/enums/AvailableSolver.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/gui/utils/TypeAliases.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Graph.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/Conflict.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/SolutionValidator.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/SolutionWithCost.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/Solver.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/cbs/AStarVertexState.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/cbs/CBS.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/cbs/CTNode.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/cbs/SingleAgentAStarSolver.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/Constants.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/Constants.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/Buttons.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/Buttons.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/Containers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/Containers.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/InputFields.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/InputFields.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/AgentsData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/AgentsData.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfGrid.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfGrid.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfNavbar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfSidebar.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/views/MapfView.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/views/MapfView.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/Agent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/Agent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/ClassicalMapf.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/ClassicalMapf.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Path.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Path.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Point.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Point.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,6 +95,7 @@
       <recent name="C:\Users\zujev\Desktop\Main\Archive\.Baka\myownproject\mapfvisualizer\src\main\resources\icons" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="problem.solver.CBS" />
       <recent name="problem.obj" />
       <recent name="problem" />
       <recent name="gui.modifiers" />
@@ -136,6 +127,14 @@
       <option name="presentableId" value="Default" />
       <updated>1715853329879</updated>
     </task>
+    <task id="LOCAL-00001" summary="Init commit">
+      <created>1715974350971</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1715974350971</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -148,5 +147,32 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Init commit" />
+    <MESSAGE value="Add CBS solver" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add CBS solver" />
+  </component>
+  <component name="XDebuggerManager">
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="kotlin.Pair" memberName="first" />
+        <PinnedItemInfo parentTag="problem.solver.cbs.CTNode" memberName="vertexConflict" />
+        <PinnedItemInfo parentTag="problem.obj.Path" memberName="steps" />
+      </pinned-members>
+    </pin-to-top-manager>
+    <watches-manager>
+      <configuration name="JetRunConfigurationType">
+        <watch expression="((Pair)((LinkedHashSet)this).toArray()[0]).first" custom="kotlin.Pair,java.util.LinkedHashSet" />
+        <watch expression="((LinkedHashMap.Entry)((LinkedHashMap)newSolution).entrySet().toArray()[0]).getValue()" custom="java.util.LinkedHashMap,java.util.LinkedHashMap.Entry" />
+        <watch expression="((HashMap.Node)((HashMap)cameFrom).entrySet().toArray()[3]).getKey()" custom="java.util.HashMap.Node,java.util.HashMap" />
+        <watch expression="((HashMap)cameFrom).entrySet().toArray()[8]" custom="java.util.HashMap" />
+        <watch expression="((HashMap.Node)((HashMap)cameFrom).entrySet().toArray()[10]).getKey()" custom="java.util.HashMap.Node,java.util.HashMap" />
+        <watch expression="((CTNode)((java.util.ArrayList)nodes).get(0)).agent" custom="problem.solver.cbs.CTNode,java.util.ArrayList" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/mapfvisualizer$MainKt.ic" NAME="MainKt Coverage Results" MODIFIED="1716107075973" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

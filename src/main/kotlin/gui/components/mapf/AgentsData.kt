@@ -26,8 +26,9 @@ import androidx.compose.ui.unit.sp
 import gui.Constants.ARROW_HEAD_ANGLE
 import gui.Constants.ARROW_HEAD_LENGTH_PX
 import gui.Constants.ARROW_RADIUS_PX
-import gui.Constants.ARROW_SHORTEN_LENGTH_PX
+import gui.Constants.ARROW_SHORTEN_LENGTH_RELATIVE_TO_CELL
 import gui.Constants.ARROW_WIDTH_PX
+import gui.Constants.CELL_SIZE_PX
 import gui.Constants.TRANSITION_DURATION_MS
 import gui.style.CustomColors.BLACK
 import kotlinx.coroutines.launch
@@ -35,33 +36,35 @@ import problem.Agent
 import problem.obj.Point
 import problem.obj.Point.Companion.equal
 import kotlin.math.*
+import problem.obj.Path as AgentPath
 
 @Composable
-fun agentData(scaledCellSize: Dp, scale: Float, currentTimeStep: Int, agents: Set<Agent>) {
-    agents.forEach { agent ->
-        agent.drawPaths(currentTimeStep, scaledCellSize, scale)
+fun agentData(scaledCellSize: Dp, scale: Float, currentTimeStep: Int, agentsWithPaths: Map<Agent, AgentPath>) {
+    agentsWithPaths.forEach { agentWithPath ->
+        agentWithPath.drawPaths(currentTimeStep, scaledCellSize, scale)
     }
 
-    agents.forEach { agent ->
+    agentsWithPaths.keys.forEach { agent ->
         agent.drawStartPoint(scaledCellSize, scale)
         agent.drawTargetPoint(scaledCellSize, scale)
     }
 
-    agents.forEach { agent ->
+    agentsWithPaths.forEach { (agent, path) ->
         animateAgentToStep(
             scaledCellSize = scaledCellSize,
             scale = scale,
             agent = agent,
+            path = path,
             currentStep = currentTimeStep,
         )
     }
 }
 
 @Composable
-private fun animateAgentToStep(scaledCellSize: Dp, scale: Float, agent: Agent, currentStep: Int) {
+private fun animateAgentToStep(scaledCellSize: Dp, scale: Float, agent: Agent, path: AgentPath, currentStep: Int) {
     val animatedX = remember(agent) { Animatable(agent.startPosition.x.toFloat()) }
     val animatedY = remember(agent) { Animatable(agent.startPosition.y.toFloat()) }
-    val targetPoint = agent.path.timeStepPosition(currentStep)
+    val targetPoint = path.timeStepPosition(currentStep)
 
     LaunchedEffect(currentStep) {
         launch {
@@ -88,19 +91,23 @@ private fun animateAgentToStep(scaledCellSize: Dp, scale: Float, agent: Agent, c
 }
 
 @Composable
-private fun Agent.drawPaths(
+private fun Map.Entry<Agent, AgentPath>.drawPaths(
     currentStep: Int,
     scaledCellSize: Dp,
     scale: Float,
 ) {
-    if (this.showPath) {
-        val pathLength = this.path.length
+    val agent = this.key
+    val path = this.value
+
+    if (agent.showPath) {
+        val pathLength = path.length()
 
         var anglePoint = Point(-1, -1)
         for (i in currentStep until pathLength - 1) {
-            val currentPoint = this.path.timeStepPosition(i)
-            val (nextPoint, pointIndex) = this.path.takeNextCell(i)
-            val afterNextPoint = this.path.takeNextCellOrNull(pointIndex)
+            val isPathStart = currentStep == i
+            val currentPoint = path.timeStepPosition(i)
+            val (nextPoint, pointIndex) = path.takeNextCell(i)
+            val afterNextPoint = path.takeNextCellOrNull(pointIndex)
 
             val isNextAngle = afterNextPoint?.let {
                 val dx = currentPoint.x - afterNextPoint.x
@@ -109,27 +116,30 @@ private fun Agent.drawPaths(
                 return@let dx != 0 && dy != 0
             } ?: false
 
+            if (!anglePoint.equal(currentPoint)) {
+                arrowLine(
+                    scale = scale,
+                    scaledCellSize = scaledCellSize,
+                    isPathStart = isPathStart,
+                    startPoint = currentPoint,
+                    endPoint = nextPoint,
+                    color = agent.primaryColor,
+                    hasArrow = i + 2 == pathLength,
+                )
+            }
+
             if (isNextAngle) {
                 arrowRounder(
                     scale = scale,
                     scaledCellSize = scaledCellSize,
+                    isPathStart = isPathStart,
                     startPoint = currentPoint,
                     middlePoint = nextPoint,
                     endPoint = afterNextPoint!!,
-                    color = this.primaryColor,
+                    color = agent.primaryColor,
                     hasArrow = i + 3 == pathLength,
                 )
-
                 anglePoint = nextPoint
-            } else if (!anglePoint.equal(currentPoint) && !anglePoint.equal(nextPoint)) {
-                arrowLine(
-                    scale = scale,
-                    scaledCellSize = scaledCellSize,
-                    startPoint = currentPoint,
-                    endPoint = nextPoint,
-                    color = this.primaryColor,
-                    hasArrow = i + 2 == pathLength,
-                )
             }
         }
     }
@@ -139,6 +149,7 @@ private fun Agent.drawPaths(
 fun arrowLine(
     scale: Float,
     scaledCellSize: Dp,
+    isPathStart: Boolean,
     startPoint: Point,
     endPoint: Point,
     color: Color,
@@ -147,12 +158,20 @@ fun arrowLine(
     val compensator = scaledCellSize / 2
     val start = startPoint.toGridPoint(scaledCellSize, compensator)
     val end = endPoint.toGridPoint(scaledCellSize, compensator)
-    val shortenedEnd = shortenLine(scale, start, end, ARROW_SHORTEN_LENGTH_PX)
+
+    val cellHalf = compensator.value
+    val cellQuarter = (scaledCellSize / 4).value
+    val modifiedStart =
+        if (isPathStart) shortenedLine(end, start, cellQuarter)
+        else extendedLine(end, start, cellHalf)
+    val shortenedEnd = shortenedLine(start, end, cellHalf)
+    val arrowShortenedEnd = shortenedLine(start, end, ARROW_SHORTEN_LENGTH_RELATIVE_TO_CELL * scaledCellSize.value)
 
     Box(modifier = Modifier.drawBehind {
         val path = Path().apply {
-            moveTo(start.floatX, start.floatY)
-            if (hasArrow) lineTo(shortenedEnd.floatX, shortenedEnd.floatY) else lineTo(end.floatX, end.floatY)
+            moveTo(modifiedStart.floatX, modifiedStart.floatY)
+            if (hasArrow) lineTo(arrowShortenedEnd.floatX, arrowShortenedEnd.floatY)
+            else lineTo(shortenedEnd.floatX, shortenedEnd.floatY)
         }
 
         drawIntoCanvas { canvas ->
@@ -167,7 +186,7 @@ fun arrowLine(
             )
 
             if (hasArrow) {
-                drawArrowHead(scale, shortenedEnd, start, color)
+                drawArrowHead(scale, arrowShortenedEnd, start, color)
             }
         }
     })
@@ -177,6 +196,7 @@ fun arrowLine(
 fun arrowRounder(
     scale: Float,
     scaledCellSize: Dp,
+    isPathStart: Boolean,
     startPoint: Point,
     middlePoint: Point,
     endPoint: Point,
@@ -187,14 +207,20 @@ fun arrowRounder(
     val start = startPoint.toGridPoint(scaledCellSize, compensator)
     val middle = middlePoint.toGridPoint(scaledCellSize, compensator)
     val end = endPoint.toGridPoint(scaledCellSize, compensator)
-    val shortenedEnd = shortenLine(scale, middle, end, ARROW_SHORTEN_LENGTH_PX)
+
+    val cellHalf = compensator.value
+    val cellQuarter = (scaledCellSize / 4).value
+    val shortenedStart = shortenedLine(middle, start, if (isPathStart) cellQuarter else cellHalf)
+    val shortenedEnd = shortenedLine(middle, end, cellHalf)
+    val arrowShortenedEnd = shortenedLine(middle, end, ARROW_SHORTEN_LENGTH_RELATIVE_TO_CELL * scaledCellSize.value)
 
     Box(modifier = Modifier.drawBehind {
         val path = Path().apply {
-            moveTo(start.floatX, start.floatY)
+            moveTo(shortenedStart.floatX, shortenedStart.floatY)
 
-            val shortenedFromStartToMiddle = shortenLine(scale, start, middle, ARROW_RADIUS_PX)
-            val shortenedFromEndToMiddle = shortenLine(scale, end, middle, ARROW_RADIUS_PX)
+            val shortenBy = scaledCellSize.value * ARROW_RADIUS_PX / CELL_SIZE_PX
+            val shortenedFromStartToMiddle = shortenedLine(start, middle, shortenBy)
+            val shortenedFromEndToMiddle = shortenedLine(end, middle, shortenBy)
 
             lineTo(shortenedFromStartToMiddle.floatX, shortenedFromStartToMiddle.floatY)
             quadraticBezierTo(
@@ -204,7 +230,8 @@ fun arrowRounder(
                 shortenedFromEndToMiddle.floatY
             )
 
-            if (hasArrow) lineTo(shortenedEnd.floatX, shortenedEnd.floatY) else lineTo(end.floatX, end.floatY)
+            if (hasArrow) lineTo(arrowShortenedEnd.floatX, arrowShortenedEnd.floatY)
+            else lineTo(shortenedEnd.floatX, shortenedEnd.floatY)
         }
 
         drawIntoCanvas { canvas ->
@@ -219,7 +246,7 @@ fun arrowRounder(
             )
 
             if (hasArrow) {
-                drawArrowHead(scale, shortenedEnd, middle, color)
+                drawArrowHead(scale, arrowShortenedEnd, middle, color)
             }
         }
     })
@@ -256,11 +283,19 @@ fun DrawScope.drawArrowHead(
     )
 }
 
-fun shortenLine(scale: Float, start: Point, end: Point, shortenBy: Float): Point {
+fun shortenedLine(start: Point, end: Point, shortenBy: Float): Point {
+    return modifyLineLength(start, end, -1 * shortenBy)
+}
+
+fun extendedLine(start: Point, end: Point, extendedBy: Float): Point {
+    return modifyLineLength(start, end, extendedBy)
+}
+
+private fun modifyLineLength(start: Point, end: Point, modifiedBy: Float): Point {
     val dx = end.x - start.x
     val dy = end.y - start.y
     val length = sqrt((dx * dx + dy * dy).toDouble())
-    val ratio = (length - shortenBy * scale) / length
+    val ratio = (length + modifiedBy) / length
     return Point(
         (start.x + dx * ratio).toInt(),
         (start.y + dy * ratio).toInt()

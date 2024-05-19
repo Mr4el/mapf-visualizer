@@ -1,6 +1,5 @@
 package problem
 
-import problem.obj.Path
 import problem.obj.Point
 import androidx.compose.ui.graphics.Color
 import gui.style.CustomColors.DARK_GRAY
@@ -13,7 +12,6 @@ class Agent(
 
     var startPosition: Point,
     var targetPosition: Point,
-    var path: Path = Path(startPosition),
 
     var showPath: Boolean = true,
 
@@ -22,11 +20,6 @@ class Agent(
 ): Point(x, y) {
     override fun isAt(x: Int, y: Int): Boolean {
         return startPosition.isAt(x, y) || targetPosition.isAt(x, y)
-    }
-
-    fun clearPath() {
-        path = Path(startPosition)
-        showPath = true
     }
 
     companion object {

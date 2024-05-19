@@ -15,26 +15,21 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun placementModeButton(
+fun simpleButton(
     text: String,
-    currentState: GridMode,
-    targetState: GridMode,
+    enabled: Boolean = true,
+    width: Dp? = null,
     onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
-        colors = if (currentState == targetState) {
-            ButtonDefaults.buttonColors(
-                backgroundColor = CustomColors.ACTIVE_BUTTON_BACKGROUND,
-                contentColor = CustomColors.ACTIVE_BUTTON_TEXT,
-            )
-        } else {
-            ButtonDefaults.buttonColors(
-                backgroundColor = CustomColors.DISABLED_BUTTON_BACKGROUND,
-                contentColor = CustomColors.DISABLED_BUTTON_TEXT,
-            )
+        enabled = enabled,
+        modifier = width?.let { Modifier.width(width) } ?: Modifier,
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text)
         }
-    ) { Text(text) }
+    }
 }
 
 @Composable
@@ -44,10 +39,12 @@ fun modeButton(
     currentState: GridMode,
     targetState: GridMode,
     width: Dp? = null,
+    enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = width?.let { Modifier.width(width) } ?: Modifier,
         colors = if (currentState == targetState) {
             ButtonDefaults.buttonColors(
@@ -78,10 +75,12 @@ fun iconButton(
     text: String,
     icon: Painter,
     width: Dp? = null,
+    enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = width?.let { Modifier.width(width) } ?: Modifier,
         colors = ButtonDefaults.buttonColors(
             backgroundColor = CustomColors.ACTIVE_BUTTON_BACKGROUND,

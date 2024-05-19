@@ -5,12 +5,16 @@ import problem.obj.Point.Companion.equal
 data class Path(
     var steps: List<Point> = emptyList()
 ) {
-    constructor(vararg points: Point): this(points.toList())
+    constructor(vararg points: Point) : this(points.toList())
 
-    val length = steps.size
+    fun length() = steps.size
 
     fun timeStepPosition(timeStep: Int): Point {
         return steps[(timeStep).coerceIn(0, steps.size - 1)]
+    }
+
+    fun resetPath(point: Point) {
+        steps = listOf(point)
     }
 
     fun takeNextCell(currentTimeStep: Int): Pair<Point, Int> {
@@ -33,5 +37,28 @@ data class Path(
             }
         }
         return null
+    }
+
+    companion object {
+        fun Collection<Path>.getSumOfCosts(): Int {
+            return this.sumOf { it.length() - 1 }
+        }
+
+        fun Collection<Path>.getMakespan(): Int {
+            return this.maxOf { it.length() - 1 }
+        }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Path) return false
+
+        if (steps != other.steps) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return steps.hashCode()
     }
 }

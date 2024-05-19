@@ -14,7 +14,7 @@ object Constants {
     const val ARROW_RADIUS_PX = 15f
     const val ARROW_HEAD_LENGTH_PX = 15f
     const val ARROW_HEAD_ANGLE = PI / 6
-    const val ARROW_SHORTEN_LENGTH_PX = 22f
+    const val ARROW_SHORTEN_LENGTH_RELATIVE_TO_CELL = 0.45f
 
     const val TRANSITION_DURATION_MS = 100
 
