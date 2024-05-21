@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6ef6f74f-38e4-40fd-961f-0a4230341440" name="Changes" comment="Fix scrolling &amp; pointers">
+    <list default="true" id="6ef6f74f-38e4-40fd-961f-0a4230341440" name="Changes" comment="Fix agent animation">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/AgentsData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/AgentsData.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfGrid.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfGrid.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -203,7 +205,14 @@
       <option name="project" value="LOCAL" />
       <updated>1716308886983</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Fix agent animation">
+      <created>1716309341385</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1716309341385</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -222,7 +231,8 @@
     <MESSAGE value="Add CBS solver" />
     <MESSAGE value="Remove unused setting" />
     <MESSAGE value="Fix scrolling &amp; pointers" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix scrolling &amp; pointers" />
+    <MESSAGE value="Fix agent animation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix agent animation" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>

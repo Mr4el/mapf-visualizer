@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.input.pointer.pointerInput
@@ -28,8 +29,8 @@ import problem.Obstacle.Companion.hasObstacleAt
 fun mapfGrid(
     gridXSize: Int,
     gridYSize: Int,
-    scaledCellSize: Dp,
     scale: Float,
+    scaledCellSize: Dp,
     obstacles: Set<Obstacle>,
     onClick: (Int, Int) -> Unit,
 ) {
@@ -39,35 +40,32 @@ fun mapfGrid(
         items(gridYSize) { y ->
             LazyRow(userScrollEnabled = false) {
                 items(gridXSize) { x ->
+                    val isObstacle = obstacles.hasObstacleAt(x, y)
                     val isHovered = hoverStates[y][x].value
-                    val backgroundColor = if (obstacles.hasObstacleAt(x, y)) {
-                        if (isHovered) DARKER_GRAY else DARK_GRAY
-                    } else {
-                        if (isHovered) LIGHTER_GRAY else WHITE
-                    }
+                    val backgroundColor = getBackgroundColor(isObstacle, isHovered)
                     val animatedCellColor by animateColorAsState(targetValue = backgroundColor)
 
-                    Box(
-                        modifier = Modifier
-                            .size(scaledCellSize)
-                            .background(animatedCellColor)
-                            .border(1.dp * scale, BLACK)
-                            .pointerInput(Unit) {
-                                detectTapGestures(
-                                    onTap = { onClick(x, y) }
-                                )
-                            }
-                            .hoverable(
-                                interactionSource = remember { MutableInteractionSource() },
-                            ).onPointerEvent(PointerEventType.Enter) {
-                                hoverStates[y][x].value = true
-                            }.onPointerEvent(PointerEventType.Exit) {
-                                hoverStates[y][x].value = false
-                            }
+                    Box(modifier = Modifier
+                        .size(scaledCellSize)
+                        .background(animatedCellColor)
+                        .border(1.dp * scale, BLACK)
+                        .pointerInput(Unit) { detectTapGestures(onTap = { onClick(x, y) }) }
+                        .hoverable(remember { MutableInteractionSource() })
+                        .onPointerEvent(PointerEventType.Enter) { hoverStates[y][x].value = true }
+                        .onPointerEvent(PointerEventType.Exit) { hoverStates[y][x].value = false }
                     )
                 }
             }
         }
+    }
+}
+
+fun getBackgroundColor(isObstacle: Boolean, isHovered: Boolean): Color {
+    return when {
+        isObstacle && isHovered -> DARKER_GRAY
+        isObstacle -> DARK_GRAY
+        isHovered -> LIGHTER_GRAY
+        else -> WHITE
     }
 }
 

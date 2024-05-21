@@ -244,7 +244,7 @@ fun arrowRounder(
     val cellHalf = compensator.value
     val cellQuarter = floor(scaledCellSize.value / 4)
     val shortenedStart = shortenedLine(middle, start, if (isPathStart) cellQuarter else cellHalf)
-    val shortenedEnd = shortenedLine(middle, end, cellHalf)
+    val shortenedEnd = shortenedLine(middle, end, cellHalf - 1 * scale)
     val arrowShortenedEnd = shortenedLine(middle, end, ARROW_SHORTEN_LENGTH_RELATIVE_TO_CELL * scaledCellSize.value)
 
     Box(modifier = Modifier.drawBehind {
@@ -375,7 +375,7 @@ private fun Agent.drawStartPoint(
         Text(
             text = agentName,
             textAlign = TextAlign.Center,
-            style = TextStyle(fontSize = (7.sp)),
+            style = TextStyle(fontSize = (12.sp)),
             modifier = Modifier
                 .scale(scale)
                 .align(Alignment.Center)
