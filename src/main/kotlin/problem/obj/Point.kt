@@ -31,8 +31,8 @@ open class Point(
     }
 
     companion object {
-        fun Float.toGridCord(scaledCellSize: Dp, compensator: Dp = 0.dp) =
-            scaledCellSize.value.roundToInt() * this.roundToInt() + compensator.value.roundToInt()
+        fun Float.toGridCord(scaledCellSize: Dp, compensator: Dp = 0.dp): Int =
+            (scaledCellSize.value.roundToInt() * this + compensator.value).roundToInt()
 
         fun Point.equal(point: Point): Boolean {
             return this.x == point.x && this.y == point.y

@@ -4,14 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6ef6f74f-38e4-40fd-961f-0a4230341440" name="Changes" comment="Remove unused setting">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="6ef6f74f-38e4-40fd-961f-0a4230341440" name="Changes" comment="Fix scrolling &amp; pointers">
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/AgentsData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/AgentsData.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfGrid.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfGrid.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/style/Colors.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/style/Colors.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/views/MapfView.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/views/MapfView.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Path.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Path.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Point.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Point.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -202,7 +196,14 @@
       <option name="project" value="LOCAL" />
       <updated>1716145627475</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Fix scrolling &amp; pointers">
+      <created>1716308886982</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1716308886983</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -220,7 +221,8 @@
     <MESSAGE value="Init commit" />
     <MESSAGE value="Add CBS solver" />
     <MESSAGE value="Remove unused setting" />
-    <option name="LAST_COMMIT_MESSAGE" value="Remove unused setting" />
+    <MESSAGE value="Fix scrolling &amp; pointers" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix scrolling &amp; pointers" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>

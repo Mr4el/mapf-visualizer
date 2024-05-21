@@ -375,7 +375,7 @@ private fun Agent.drawStartPoint(
         Text(
             text = agentName,
             textAlign = TextAlign.Center,
-            style = TextStyle(fontSize = (12.sp)),
+            style = TextStyle(fontSize = (7.sp)),
             modifier = Modifier
                 .scale(scale)
                 .align(Alignment.Center)
