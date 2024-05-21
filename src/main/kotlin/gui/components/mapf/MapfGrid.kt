@@ -3,21 +3,27 @@ package gui.components.mapf
 import androidx.compose.foundation.*
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import gui.style.CustomColors.BLACK
+import gui.style.CustomColors.DARKER_GRAY
 import gui.style.CustomColors.DARK_GRAY
+import gui.style.CustomColors.LIGHTER_GRAY
 import gui.style.CustomColors.WHITE
 import problem.Obstacle
 import problem.Obstacle.Companion.hasObstacleAt
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun mapfGrid(
     gridXSize: Int,
@@ -27,12 +33,19 @@ fun mapfGrid(
     obstacles: Set<Obstacle>,
     onClick: (Int, Int) -> Unit,
 ) {
+    val hoverStates = remember { Array(gridYSize) { Array(gridXSize) { mutableStateOf(false) } } }
+
     LazyColumn(userScrollEnabled = false) {
         items(gridYSize) { y ->
             LazyRow(userScrollEnabled = false) {
                 items(gridXSize) { x ->
-                    val cellColor = if (obstacles.hasObstacleAt(x, y)) DARK_GRAY else WHITE
-                    val animatedCellColor by animateColorAsState(targetValue = cellColor)
+                    val isHovered = hoverStates[y][x].value
+                    val backgroundColor = if (obstacles.hasObstacleAt(x, y)) {
+                        if (isHovered) DARKER_GRAY else DARK_GRAY
+                    } else {
+                        if (isHovered) LIGHTER_GRAY else WHITE
+                    }
+                    val animatedCellColor by animateColorAsState(targetValue = backgroundColor)
 
                     Box(
                         modifier = Modifier
@@ -43,6 +56,13 @@ fun mapfGrid(
                                 detectTapGestures(
                                     onTap = { onClick(x, y) }
                                 )
+                            }
+                            .hoverable(
+                                interactionSource = remember { MutableInteractionSource() },
+                            ).onPointerEvent(PointerEventType.Enter) {
+                                hoverStates[y][x].value = true
+                            }.onPointerEvent(PointerEventType.Exit) {
+                                hoverStates[y][x].value = false
                             }
                     )
                 }

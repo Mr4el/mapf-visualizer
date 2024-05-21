@@ -28,15 +28,15 @@ data class Path(
         return timeStepPosition(currentTimeStep) to currentTimeStep
     }
 
-    fun takeNextCellOrNull(currentTimeStep: Int): Point? {
+    fun takeNextCellOrNull(currentTimeStep: Int): Pair<Point?, Int> {
         for (i in currentTimeStep until steps.size) {
             val currentStep = timeStepPosition(i)
             val nextStep = timeStepPosition(i + 1)
             if (!currentStep.equal(nextStep)) {
-                return nextStep
+                return nextStep to i + 1
             }
         }
-        return null
+        return null to 0
     }
 
     companion object {

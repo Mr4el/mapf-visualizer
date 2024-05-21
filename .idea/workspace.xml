@@ -4,16 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6ef6f74f-38e4-40fd-961f-0a4230341440" name="Changes" comment="Add CBS solver">
+    <list default="true" id="6ef6f74f-38e4-40fd-961f-0a4230341440" name="Changes" comment="Remove unused setting">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/Constants.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/Constants.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfSidebar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfSidebar.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/AgentsData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/AgentsData.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfGrid.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfGrid.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/style/Colors.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/style/Colors.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/views/MapfView.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/views/MapfView.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/ClassicalMapf.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/ClassicalMapf.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/solver/Conflict.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/obj/Conflict.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/solver/SolutionValidator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/SolutionValidator.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/solver/cbs/CBS.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/cbs/CBS.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/solver/cbs/SingleAgentAStarSolver.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/cbs/SingleAgentAStarSolver.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Path.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Path.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Point.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Point.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +69,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.compose.foundation/foundation-desktop/1.6.1/ba7594fb0b292196b40c2f71dea9fdb75e82ad72/foundation-desktop-1.6.1-sources.jar!/commonMain/androidx/compose/foundation/Border.kt" root0="SKIP_INSPECTION" />
     <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.compose.foundation/foundation-layout-desktop/1.4.0/de225bf03ff2f991c6f5ef51cf5b9c2213f00327/foundation-layout-desktop-1.4.0-sources.jar!/commonMain/androidx/compose/foundation/layout/Arrangement.kt" root0="SKIP_INSPECTION" />
     <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.compose.foundation/foundation-layout-desktop/1.4.0/de225bf03ff2f991c6f5ef51cf5b9c2213f00327/foundation-layout-desktop-1.4.0-sources.jar!/commonMain/androidx/compose/foundation/layout/Box.kt" root0="SKIP_INSPECTION" />
   </component>
@@ -196,7 +195,14 @@
       <option name="project" value="LOCAL" />
       <updated>1716141550095</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Remove unused setting">
+      <created>1716145627475</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1716145627475</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -213,7 +219,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Init commit" />
     <MESSAGE value="Add CBS solver" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add CBS solver" />
+    <MESSAGE value="Remove unused setting" />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove unused setting" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>

@@ -3,6 +3,7 @@ package problem.obj
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 open class Point(
     val x: Int,
@@ -17,8 +18,8 @@ open class Point(
     val dpY = y.dp
 
     fun toGridPoint(scaledCellSize: Dp, compensator: Dp = 0.dp) = Point(
-        x = (scaledCellSize.value * x.toFloat() + compensator.value).toInt(),
-        y = (scaledCellSize.value * y.toFloat() + compensator.value).toInt(),
+        x = scaledCellSize.value.roundToInt() * x + compensator.value.roundToInt(),
+        y = scaledCellSize.value.roundToInt() * y + compensator.value.roundToInt(),
     )
 
     open fun isAt(x: Int, y: Int): Boolean {
@@ -30,6 +31,9 @@ open class Point(
     }
 
     companion object {
+        fun Float.toGridCord(scaledCellSize: Dp, compensator: Dp = 0.dp) =
+            scaledCellSize.value.roundToInt() * this.roundToInt() + compensator.value.roundToInt()
+
         fun Point.equal(point: Point): Boolean {
             return this.x == point.x && this.y == point.y
         }
@@ -44,6 +48,10 @@ open class Point(
             val dy = abs(this.y - point.y)
             return dx + dy
         }
+    }
+
+    override fun toString(): String {
+        return "x: $x; y:$y"
     }
 
     override fun equals(other: Any?): Boolean {

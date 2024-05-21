@@ -24,7 +24,9 @@ object CustomColors {
     val WHITE = Color.White
     val BLACK = Color.Black
 
+    val DARKER_GRAY = Color(0xff232526)
     val DARK_GRAY = Color(0xff3b4045)
+    val LIGHTER_GRAY = Color(0xffe3e1e1)
     val LIGHT_GRAY = Color.LightGray
 
     val BACKGROUND_COLOR = Color(0xfffff7fd)

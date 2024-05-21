@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -35,6 +36,7 @@ import kotlinx.coroutines.launch
 import problem.Agent
 import problem.obj.Point
 import problem.obj.Point.Companion.equal
+import problem.obj.Point.Companion.toGridCord
 import kotlin.math.*
 import problem.obj.Path as AgentPath
 
@@ -62,14 +64,14 @@ fun agentData(scaledCellSize: Dp, scale: Float, currentTimeStep: Int, agentsWith
 
 @Composable
 private fun animateAgentToStep(scaledCellSize: Dp, scale: Float, agent: Agent, path: AgentPath, currentStep: Int) {
-    val animatedX = remember(agent) { Animatable(agent.startPosition.x.toFloat()) }
-    val animatedY = remember(agent) { Animatable(agent.startPosition.y.toFloat()) }
+    val animatedX = remember(agent) { Animatable(agent.startPosition.floatX) }
+    val animatedY = remember(agent) { Animatable(agent.startPosition.floatY) }
     val targetPoint = path.timeStepPosition(currentStep)
 
     LaunchedEffect(currentStep) {
         launch {
             animatedX.animateTo(
-                targetValue = targetPoint.x.toFloat(),
+                targetValue = targetPoint.floatX,
                 animationSpec = tween(
                     durationMillis = TRANSITION_DURATION_MS,
                     easing = LinearEasing,
@@ -78,7 +80,7 @@ private fun animateAgentToStep(scaledCellSize: Dp, scale: Float, agent: Agent, p
         }
         launch {
             animatedY.animateTo(
-                targetValue = targetPoint.y.toFloat(),
+                targetValue = targetPoint.floatY,
                 animationSpec = tween(
                     durationMillis = TRANSITION_DURATION_MS,
                     easing = LinearEasing,
@@ -103,11 +105,13 @@ private fun Map.Entry<Agent, AgentPath>.drawPaths(
         val pathLength = path.length()
 
         var anglePoint = Point(-1, -1)
+        var isPreviousWaitingStep = false
+        var hasLoop = false
         for (i in currentStep until pathLength - 1) {
             val isPathStart = currentStep == i
             val currentPoint = path.timeStepPosition(i)
-            val (nextPoint, pointIndex) = path.takeNextCell(i)
-            val afterNextPoint = path.takeNextCellOrNull(pointIndex)
+            val (nextPoint, nextPointIndex) = path.takeNextCell(i)
+            val (afterNextPoint, afterNextPointIndex) = path.takeNextCellOrNull(nextPointIndex)
 
             val isNextAngle = afterNextPoint?.let {
                 val dx = currentPoint.x - afterNextPoint.x
@@ -121,10 +125,12 @@ private fun Map.Entry<Agent, AgentPath>.drawPaths(
                     scale = scale,
                     scaledCellSize = scaledCellSize,
                     isPathStart = isPathStart,
+                    hasLoop = hasLoop,
+                    afterWaitingStep = isPreviousWaitingStep,
                     startPoint = currentPoint,
                     endPoint = nextPoint,
                     color = agent.primaryColor,
-                    hasArrow = i + 2 == pathLength,
+                    hasArrow = nextPointIndex + 1 == pathLength,
                 )
             }
 
@@ -137,10 +143,13 @@ private fun Map.Entry<Agent, AgentPath>.drawPaths(
                     middlePoint = nextPoint,
                     endPoint = afterNextPoint!!,
                     color = agent.primaryColor,
-                    hasArrow = i + 3 == pathLength,
+                    hasArrow = afterNextPointIndex + 1 == pathLength,
                 )
                 anglePoint = nextPoint
             }
+
+            isPreviousWaitingStep = nextPointIndex - i != 1
+            hasLoop = currentPoint == afterNextPoint
         }
     }
 }
@@ -150,6 +159,8 @@ fun arrowLine(
     scale: Float,
     scaledCellSize: Dp,
     isPathStart: Boolean,
+    hasLoop: Boolean,
+    afterWaitingStep: Boolean,
     startPoint: Point,
     endPoint: Point,
     color: Color,
@@ -160,15 +171,37 @@ fun arrowLine(
     val end = endPoint.toGridPoint(scaledCellSize, compensator)
 
     val cellHalf = compensator.value
-    val cellQuarter = (scaledCellSize / 4).value
+    val cellQuarter = floor(scaledCellSize.value / 4)
     val modifiedStart =
-        if (isPathStart) shortenedLine(end, start, cellQuarter)
-        else extendedLine(end, start, cellHalf)
-    val shortenedEnd = shortenedLine(start, end, cellHalf)
+        if (isPathStart || afterWaitingStep || hasLoop) shortenedLine(end, start, cellQuarter)
+        else extendedLine(end, start, cellHalf - 1)
+    val shortenedEnd = shortenedLine(start, end, cellHalf - 1)
     val arrowShortenedEnd = shortenedLine(start, end, ARROW_SHORTEN_LENGTH_RELATIVE_TO_CELL * scaledCellSize.value)
 
     Box(modifier = Modifier.drawBehind {
         val path = Path().apply {
+            if (hasLoop) {
+                moveTo(modifiedStart.floatX, modifiedStart.floatY)
+
+                val circleRadius = 10f
+
+                val dx = if (hasArrow) arrowShortenedEnd.floatX - modifiedStart.floatX else shortenedEnd.floatX - modifiedStart.floatX
+                val dy = if (hasArrow) arrowShortenedEnd.floatY - modifiedStart.floatY else shortenedEnd.floatY - modifiedStart.floatY
+                val angle = atan2(dy, dx)
+
+                val circleCenterX = modifiedStart.floatX - circleRadius * cos(angle)
+                val circleCenterY = modifiedStart.floatY - circleRadius * sin(angle)
+
+                addOval(
+                    Rect(
+                        circleCenterX - circleRadius,
+                        circleCenterY - circleRadius,
+                        circleCenterX + circleRadius,
+                        circleCenterY + circleRadius
+                    )
+                )
+            }
+
             moveTo(modifiedStart.floatX, modifiedStart.floatY)
             if (hasArrow) lineTo(arrowShortenedEnd.floatX, arrowShortenedEnd.floatY)
             else lineTo(shortenedEnd.floatX, shortenedEnd.floatY)
@@ -209,7 +242,7 @@ fun arrowRounder(
     val end = endPoint.toGridPoint(scaledCellSize, compensator)
 
     val cellHalf = compensator.value
-    val cellQuarter = (scaledCellSize / 4).value
+    val cellQuarter = floor(scaledCellSize.value / 4)
     val shortenedStart = shortenedLine(middle, start, if (isPathStart) cellQuarter else cellHalf)
     val shortenedEnd = shortenedLine(middle, end, cellHalf)
     val arrowShortenedEnd = shortenedLine(middle, end, ARROW_SHORTEN_LENGTH_RELATIVE_TO_CELL * scaledCellSize.value)
@@ -403,12 +436,12 @@ private fun Agent.drawAgent(
     val agentPrimaryColor = this.primaryColor
 
     val compensator = scaledCellSize * (1 - TARGET_SIZE_RELATIVE_TO_CELL) / 2
-    val currentX = animatedX.value.dp * scaledCellSize.value + compensator
-    val currentY = animatedY.value.dp * scaledCellSize.value + compensator
+    val currentX = animatedX.value.toGridCord(scaledCellSize, compensator).dp
+    val currentY = animatedY.value.toGridCord(scaledCellSize, compensator).dp
 
     Box(
         modifier = Modifier
-            .offset(currentX - 1.dp, currentY - 1.dp)
+            .offset(currentX, currentY)
             .size(scaledCellSize * TARGET_SIZE_RELATIVE_TO_CELL)
     ) {
         Canvas(modifier = Modifier.matchParentSize()) {
