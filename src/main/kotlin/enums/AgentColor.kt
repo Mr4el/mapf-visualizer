@@ -1,4 +1,4 @@
-package gui.enums
+package enums
 
 import androidx.compose.ui.graphics.Color
 import gui.style.CustomColors

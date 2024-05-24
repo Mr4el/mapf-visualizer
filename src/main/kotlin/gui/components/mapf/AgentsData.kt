@@ -183,7 +183,7 @@ fun arrowLine(
             if (hasLoop) {
                 moveTo(modifiedStart.floatX, modifiedStart.floatY)
 
-                val circleRadius = 10f
+                val circleRadius = 10f * scale
 
                 val dx = if (hasArrow) arrowShortenedEnd.floatX - modifiedStart.floatX else shortenedEnd.floatX - modifiedStart.floatX
                 val dy = if (hasArrow) arrowShortenedEnd.floatY - modifiedStart.floatY else shortenedEnd.floatY - modifiedStart.floatY

@@ -1,4 +1,4 @@
-package gui.enums
+package enums
 
 enum class GridMode {
     SET_OBSTACLES,

@@ -18,8 +18,8 @@ data class Conflict(
         EDGE,
     }
 
-    fun isVertexConflict() = conflictType == Type.VERTEX
-    fun isEdgeConflict() = conflictType == Type.EDGE
+    private fun isVertexConflict() = conflictType == Type.VERTEX
+    private fun isEdgeConflict() = conflictType == Type.EDGE
 
     fun toVertexConflict(): VertexConflict? {
         return if (isVertexConflict()) {

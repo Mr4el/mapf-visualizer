@@ -25,7 +25,7 @@ class SingleAgentAStarSolver(
     ): Path {
         val maxConflictTimeStep = max(
             vertexConflicts.maxOfOrNull { it.second } ?: 0,
-            edgeConflicts.maxOfOrNull { it.second } ?: 0
+            edgeConflicts.maxOfOrNull { it.second } ?: 0,
         )
 
         val cameFrom = HashMap<AStarVertexState, AStarVertexState>()
@@ -61,10 +61,13 @@ class SingleAgentAStarSolver(
                     hScore = heuristic(neighborVertexPosition, agent.targetPosition)
                 )
 
-                val vertexAtTimeStep = Pair(neighborVertexPosition, nextAStarVertexState.timeStep)
+                val vertexAtTimeStep = Pair(
+                    neighborVertexPosition,
+                    nextAStarVertexState.timeStep,
+                )
                 val edgeAtTimeStep = Pair(
                     Pair(currentVertexState.position, neighborVertexPosition),
-                    currentVertexState.timeStep
+                    currentVertexState.timeStep,
                 )
 
                 val hasVertexConflict = vertexConflicts.containsVertex(vertexAtTimeStep)
@@ -76,7 +79,11 @@ class SingleAgentAStarSolver(
                     return@forEach
                 }
 
-                if (nextAStarVertexState !in openSet && nextAStarVertexState !in closedSet && nextAStarVertexState.timeStep < graph.size()) {
+                if (
+                    nextAStarVertexState !in openSet
+                    && nextAStarVertexState !in closedSet
+                    && nextAStarVertexState.timeStep < graph.size()
+                ) {
                     cameFrom[nextAStarVertexState] = currentVertexState
                     queue.add(nextAStarVertexState)
                     openSet.add(nextAStarVertexState)

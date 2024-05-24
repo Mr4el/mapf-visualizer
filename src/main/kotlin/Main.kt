@@ -1,9 +1,22 @@
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
+import gui.style.CustomColors.BACKGROUND
+import gui.style.CustomColors.ERROR
+import gui.style.CustomColors.ON_BACKGROUND
+import gui.style.CustomColors.ON_ERROR
+import gui.style.CustomColors.ON_PRIMARY
+import gui.style.CustomColors.ON_SECONDARY
+import gui.style.CustomColors.ON_SURFACE
+import gui.style.CustomColors.PRIMARY
+import gui.style.CustomColors.PRIMARY_VARIANT
+import gui.style.CustomColors.SECONDARY
+import gui.style.CustomColors.SECONDARY_VARIANT
+import gui.style.CustomColors.SURFACE
 import gui.views.mapfView
 
 fun main() {
@@ -13,7 +26,10 @@ fun main() {
 fun composeMain() {
     // Compose for Desktop entry point
     application {
-        Window(onCloseRequest = ::exitApplication) {
+        Window(
+            onCloseRequest = ::exitApplication,
+            state = rememberWindowState(width = 1200.dp, height = 800.dp)
+        ) {
             appTheme {
                 mapfView()
             }
@@ -24,18 +40,18 @@ fun composeMain() {
 @Composable
 fun appTheme(content: @Composable () -> Unit) {
     val colors = lightColors(
-        primary = Color(0xff715189),
-        primaryVariant = Color(0xfff2daff),
-        secondary = Color(0xff675a6e),
-        secondaryVariant = Color(0xffeeddf5),
-        background = Color(0xFFF7FBF2),
-        surface = Color(0xfffff7fd),
-        error = Color(0xffba1a1a),
-        onPrimary = Color.White,
-        onSecondary = Color.Black,
-        onBackground = Color(0xFF181D18),
-        onSurface = Color(0xff1e1a20),
-        onError = Color.White
+        primary = PRIMARY,
+        primaryVariant = PRIMARY_VARIANT,
+        secondary = SECONDARY,
+        secondaryVariant = SECONDARY_VARIANT,
+        background = BACKGROUND,
+        surface = SURFACE,
+        error = ERROR,
+        onPrimary = ON_PRIMARY,
+        onSecondary = ON_SECONDARY,
+        onBackground = ON_BACKGROUND,
+        onSurface = ON_SURFACE,
+        onError = ON_ERROR,
     )
 
     MaterialTheme(

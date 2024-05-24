@@ -1,9 +1,10 @@
 package problem
 
-import gui.enums.AvailableSolver
-import gui.enums.GridMode
+import enums.AvailableSolver
+import enums.GridMode
 import gui.utils.ColorPicker
 import gui.utils.MutableBasicSolution
+import kotlinx.coroutines.CancellationException
 import problem.Agent.Companion.hasAgentAt
 import problem.Obstacle.Companion.hasObstacleAt
 import problem.obj.Graph
@@ -21,6 +22,8 @@ data class ClassicalMapf(
     var autoPlayEnabled: Boolean = false,
     var autoplaySpeedMs: Long = 250,
     var waitingForSolution: Boolean = false,
+    var problemSolvingTimeMs: Long = 0,
+    var exceptionDescription: String? = null,
 
     var waitingActionsCountLimit: Int = 10,
     var allowVertexConflict: Boolean = false,
@@ -36,6 +39,10 @@ data class ClassicalMapf(
     private var placeTargetPointToAgent: Agent? = null,
     private var latestAgentNumber: Int = agentsWithPaths.size,
 ) {
+    fun hasSolution(): Boolean {
+        return solutionCostMakespan != null || solutionConstSumOfCosts != null
+    }
+
     fun hasNextTimeStep(): Boolean {
         return currentTimeStep != solutionCostMakespan
     }
@@ -101,13 +108,18 @@ data class ClassicalMapf(
         return graph
     }
 
-    fun solveProblem(selectedSolver: AvailableSolver) {
-
+    suspend fun solveProblem(selectedSolver: AvailableSolver) {
         val solver = when(selectedSolver) {
             AvailableSolver.CBS -> CBS(this)
         }
 
-        solver.solve()?.let { applySolution(it) }
+        try {
+            solver.solve()?.let { applySolution(it) }
+        } catch (e: CancellationException) {
+            exceptionDescription = "The search for a solution has been canceled!"
+        } catch (e: Exception) {
+            exceptionDescription = e.message
+        }
     }
 
     fun resetMapfSolution() {
@@ -116,6 +128,7 @@ data class ClassicalMapf(
             path.resetPath(agent.startPosition)
         }
         solutionCostMakespan = null
+        solutionConstSumOfCosts = null
         resetTimeStep()
     }
 
@@ -123,6 +136,7 @@ data class ClassicalMapf(
         agentsWithPaths = solution.solution.toMutableMap()
         solutionCostMakespan = solution.makespan
         solutionConstSumOfCosts = solution.sumOfCosts
+        exceptionDescription = null
     }
 
     private fun updateObstacles(x: Int, y: Int) {

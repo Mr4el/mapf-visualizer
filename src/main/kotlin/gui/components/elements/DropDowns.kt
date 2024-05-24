@@ -1,18 +1,22 @@
 package gui.components.elements
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 
 @Composable
 fun dropdownMenuComponent(
     targetName: String,
     enabled: Boolean = true,
     options: List<String>,
+    width: Dp? = null,
     selectedOption: String,
     onOptionSelected: (String) -> Unit
 ) {
@@ -21,6 +25,7 @@ fun dropdownMenuComponent(
 
     Box {
         Button(
+            modifier = width?.let { Modifier.width(it) } ?: Modifier,
             onClick = { expanded = true },
             enabled = enabled,
         ) {
@@ -28,6 +33,7 @@ fun dropdownMenuComponent(
         }
 
         DropdownMenu(
+            modifier = width?.let { Modifier.width(it) } ?: Modifier,
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {

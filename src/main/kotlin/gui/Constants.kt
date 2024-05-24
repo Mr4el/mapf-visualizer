@@ -20,7 +20,7 @@ object Constants {
 
     // Zoom config
     const val DEFAULT_SCALE = 1f
-    const val MIN_ZOOM = 0.25f
+    const val MIN_ZOOM = 0.5f
     const val MAX_ZOOM = 3f
-    const val SCROLL_LAMBDA = 0.2f
+    const val SCROLL_LAMBDA = 0.25f
 }

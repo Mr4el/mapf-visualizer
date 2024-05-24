@@ -16,17 +16,19 @@ import gui.Constants.SCROLL_LAMBDA
 import gui.components.elements.draggableZoomableContainer
 import gui.components.elements.fpsCounter
 import gui.components.mapf.*
-import gui.enums.AgentColor
-import gui.enums.AvailableSolver
+import enums.AgentColor
+import enums.AvailableSolver
 import gui.style.CustomColors.BACKGROUND_COLOR
 import gui.utils.ColorPicker
 import gui.utils.Utils.updateFps
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
 import problem.Agent
 import problem.ClassicalMapf
 import problem.Obstacle
 import problem.obj.Point
 import problem.obj.Path
+import java.lang.System.currentTimeMillis
 import java.lang.System.nanoTime
 import kotlin.system.measureTimeMillis
 
@@ -76,7 +78,11 @@ fun mapfView() {
     val offsetState = remember { mutableStateOf(Offset.Zero) }
     var mapfState by remember { mutableStateOf(classicalMapfProblem) }
     var mapfSolver by remember { mutableStateOf(AvailableSolver.CBS) }
-    val mapfJob = remember { Job() }
+
+    val mapfJob = remember { MutableStateFlow<Job?>(null) }
+    val coroutineScope = rememberCoroutineScope()
+    var elapsedTime by remember { mutableStateOf(0L) }
+    var startTime by remember { mutableStateOf(0L) }
 
     var frameStartTimeNanos by remember { mutableStateOf(nanoTime()) }
     var fps by remember { mutableStateOf(0) }
@@ -112,6 +118,15 @@ fun mapfView() {
                 mapfState = mapfState.copy()
             } else {
                 delay(mapfState.autoplaySpeedMs / 2)
+            }
+        }
+    }
+
+    LaunchedEffect(mapfState.waitingForSolution) {
+        if (mapfState.waitingForSolution) {
+            while (mapfState.waitingForSolution) {
+                elapsedTime = currentTimeMillis() - startTime
+                delay(10)
             }
         }
     }
@@ -154,18 +169,34 @@ fun mapfView() {
     }
 
     fun solveProblem() {
-        mapfState.solutionCostMakespan ?: run {
+        if(!mapfState.hasSolution()) {
             mapfState = mapfState.apply { waitingForSolution = true }
-            CoroutineScope(Dispatchers.Default + mapfJob).launch {
-                measureTimeMillis {
+            startTime = currentTimeMillis()
+
+            mapfJob.value?.cancel()
+            mapfJob.value = coroutineScope.launch(Dispatchers.Default) {
+                println("Looking for a solution...")
+
+                val timeSpent = measureTimeMillis {
                     mapfState.solveProblem(mapfSolver)
-                }.let { println("Solution took $it ms") }
+                }.also { println("Solution took $it ms") }
+
                 mapfState = mapfState.apply {
+                    problemSolvingTimeMs = timeSpent
                     autoPlayEnabled = true
                     waitingForSolution = false
                 }.copy()
             }
         }
+    }
+
+    fun abortSolving() {
+        mapfJob.value?.cancel()
+        startTime = 0L
+        mapfState = mapfState.apply {
+            waitingForSolution = false
+        }
+        println("The search for a solution was interrupted manually!")
     }
 
 
@@ -209,8 +240,10 @@ fun mapfView() {
             mapfSidebar(
                 mapfState = mapfState,
                 mapfSolver = mapfSolver,
+                problemSolvingTime = elapsedTime,
                 isDraggableEnabled = isDraggableEnabled,
                 waitingForSolution = mapfState.waitingForSolution,
+                exceptionDescription = mapfState.exceptionDescription,
                 onUpdateAllowSwapConflict = { updateAllowSwapConflict(it) },
                 onUpdateAllowVertexConflict = { updateAllowVertexConflict(it) },
                 onUpdateDraggableState = { isDraggableEnabled = it },
@@ -219,7 +252,8 @@ fun mapfView() {
                 onUpdateState = { mapfState = it },
                 onClearAll = { clearField() },
                 onSolverSelected = { mapfSolver = it },
-                onSolveProblem = { solveProblem() }
+                onSolveProblem = { solveProblem() },
+                onStopFindingSolution = { abortSolving() },
             )
         }
 

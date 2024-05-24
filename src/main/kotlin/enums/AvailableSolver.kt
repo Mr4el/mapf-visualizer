@@ -1,4 +1,4 @@
-package gui.enums
+package enums
 
 enum class AvailableSolver(name: String) {
     CBS("CBS");

@@ -5,5 +5,5 @@ import problem.ClassicalMapf
 abstract class Solver(
     val classicalMapfProblem: ClassicalMapf,
 ) {
-    abstract fun solve(): SolutionWithCost?
+    abstract suspend fun solve(): SolutionWithCost?
 }

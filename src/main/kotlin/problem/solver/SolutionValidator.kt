@@ -40,23 +40,26 @@ object SolutionValidator {
 
             // Searching for edge conflicts
             if (!allowSwapConflict) {
-                this.forEach { (agent, path) ->
-                    val currentPosition = path.timeStepPosition(currentTimeStep)
-                    val nextPosition = path.timeStepPosition(currentTimeStep + 1)
+                this.forEach { (firstAgent, firstAgentPath) ->
+                    val firstAgentCurrentPosition = firstAgentPath.timeStepPosition(currentTimeStep)
+                    val firstAgentNextPosition = firstAgentPath.timeStepPosition(currentTimeStep + 1)
 
-                    this.forEach secondAgentLoop@{ (otherAgent, otherPath) ->
-                        if (agent == otherAgent) return@secondAgentLoop
+                    this.forEach secondAgentLoop@{ (secondAgent, secondAgentPath) ->
+                        if (firstAgent == secondAgent) return@secondAgentLoop
 
-                        val otherCurrentPosition = otherPath.timeStepPosition(currentTimeStep)
-                        val otherNextPosition = otherPath.timeStepPosition(currentTimeStep + 1)
+                        val secondAgentCurrentPosition = secondAgentPath.timeStepPosition(currentTimeStep)
+                        val secondAgentNextPosition = secondAgentPath.timeStepPosition(currentTimeStep + 1)
 
                         // Searching for swap conflict
-                        if (currentPosition == otherNextPosition && nextPosition == otherCurrentPosition) {
+                        if (
+                            firstAgentCurrentPosition == secondAgentNextPosition
+                            && firstAgentNextPosition == secondAgentCurrentPosition
+                        ) {
                             return Conflict(
-                                firstAgent = agent,
-                                secondAgent = otherAgent,
-                                conflictFirstAgentLocation = currentPosition,
-                                conflictSecondAgentLocation = otherCurrentPosition,
+                                firstAgent = firstAgent,
+                                secondAgent = secondAgent,
+                                conflictFirstAgentLocation = firstAgentCurrentPosition,
+                                conflictSecondAgentLocation = secondAgentCurrentPosition,
                                 timeStep = currentTimeStep,
                                 conflictType = Conflict.Type.EDGE,
                             )

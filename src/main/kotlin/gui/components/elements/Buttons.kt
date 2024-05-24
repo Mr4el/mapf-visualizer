@@ -1,15 +1,13 @@
 package gui.components.elements
 
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.painter.Painter
-import gui.enums.GridMode
+import enums.GridMode
 import gui.style.CustomColors
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -66,6 +64,50 @@ fun modeButton(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(text)
+        }
+    }
+}
+
+@Composable
+fun <T> expandedButton(
+    icon: Painter,
+    text: String,
+    width: Dp? = null,
+    enabled: Boolean = true,
+    options: List<Pair<T, Boolean>>,
+    onClick: (T) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box {
+        Button(
+            onClick = { expanded = !expanded },
+            modifier = width?.let { Modifier.width(width) } ?: Modifier,
+            enabled = enabled,
+        ) { Text(text) }
+
+        DropdownMenu(
+            modifier = width?.let { Modifier.width(width) } ?: Modifier,
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            options.forEach { (option, enabled) ->
+                DropdownMenuItem(
+                    enabled = enabled,
+                    onClick = {
+                        expanded = false
+                        onClick(option)
+                    }
+                ) {
+                    Image(
+                        painter = icon,
+                        contentDescription = text,
+                        modifier = Modifier.size(30.dp),
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(option.toString())
+                }
+            }
         }
     }
 }

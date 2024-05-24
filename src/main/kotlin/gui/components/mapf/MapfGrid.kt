@@ -23,6 +23,7 @@ import gui.style.CustomColors.LIGHTER_GRAY
 import gui.style.CustomColors.WHITE
 import problem.Obstacle
 import problem.Obstacle.Companion.hasObstacleAt
+import problem.obj.Point
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -34,25 +35,36 @@ fun mapfGrid(
     obstacles: Set<Obstacle>,
     onClick: (Int, Int) -> Unit,
 ) {
-    val hoverStates = remember { Array(gridYSize) { Array(gridXSize) { mutableStateOf(false) } } }
+    var hoveredCell by remember { mutableStateOf<Point?>(null) }
 
     LazyColumn(userScrollEnabled = false) {
         items(gridYSize) { y ->
             LazyRow(userScrollEnabled = false) {
                 items(gridXSize) { x ->
-                    val isObstacle = obstacles.hasObstacleAt(x, y)
-                    val isHovered = hoverStates[y][x].value
-                    val backgroundColor = getBackgroundColor(isObstacle, isHovered)
-                    val animatedCellColor by animateColorAsState(targetValue = backgroundColor)
+                    val backgroundColor = getBackgroundColor(
+                        isObstacle = obstacles.hasObstacleAt(x, y),
+                        isHovered = hoveredCell?.isAt(x, y) ?: false,
+                    )
+                    val animatedCellColor by animateColorAsState(
+                        targetValue = backgroundColor
+                    )
 
                     Box(modifier = Modifier
                         .size(scaledCellSize)
                         .background(animatedCellColor)
                         .border(1.dp * scale, BLACK)
-                        .pointerInput(Unit) { detectTapGestures(onTap = { onClick(x, y) }) }
-                        .hoverable(remember { MutableInteractionSource() })
-                        .onPointerEvent(PointerEventType.Enter) { hoverStates[y][x].value = true }
-                        .onPointerEvent(PointerEventType.Exit) { hoverStates[y][x].value = false }
+                        .pointerInput(Unit) {
+                            detectTapGestures(onTap = { onClick(x, y) })
+                        }
+                        .hoverable(
+                            remember { MutableInteractionSource() }
+                        )
+                        .onPointerEvent(PointerEventType.Enter) {
+                            hoveredCell = Point(x, y)
+                        }
+                        .onPointerEvent(PointerEventType.Exit) {
+                            hoveredCell = null
+                        }
                     )
                 }
             }

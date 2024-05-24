@@ -4,10 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6ef6f74f-38e4-40fd-961f-0a4230341440" name="Changes" comment="Fix agent animation">
+    <list default="true" id="6ef6f74f-38e4-40fd-961f-0a4230341440" name="Changes" comment="Code formatting">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/Constants.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/Constants.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/Buttons.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/Buttons.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/Checkboxes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/Switches.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/DropDowns.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/elements/DropDowns.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/AgentsData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/AgentsData.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfGrid.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfGrid.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfSidebar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/components/mapf/MapfSidebar.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/enums/AgentColor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/enums/AgentColor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/enums/AvailableSolver.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/enums/AvailableSolver.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/enums/GridMode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/enums/GridMode.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/style/Colors.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/style/Colors.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/utils/ColorPicker.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/utils/ColorPicker.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/utils/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/utils/Utils.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/gui/views/MapfView.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/gui/views/MapfView.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/ClassicalMapf.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/ClassicalMapf.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Graph.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/obj/Graph.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/solver/SolutionValidator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/SolutionValidator.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/solver/Solver.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/Solver.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/solver/cbs/CBS.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/cbs/CBS.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/solver/cbs/SingleAgentAStarSolver.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/cbs/SingleAgentAStarSolver.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/problem/solver/obj/Conflict.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/problem/solver/obj/Conflict.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -212,7 +232,14 @@
       <option name="project" value="LOCAL" />
       <updated>1716309341385</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Code formatting">
+      <created>1716329383651</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1716329383651</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -232,7 +259,8 @@
     <MESSAGE value="Remove unused setting" />
     <MESSAGE value="Fix scrolling &amp; pointers" />
     <MESSAGE value="Fix agent animation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix agent animation" />
+    <MESSAGE value="Code formatting" />
+    <option name="LAST_COMMIT_MESSAGE" value="Code formatting" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>

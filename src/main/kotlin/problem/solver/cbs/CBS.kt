@@ -2,6 +2,7 @@ package problem.solver.cbs
 
 import exceptions.Exceptions.agentHasReachedWaitLimit
 import exceptions.ReachedWaitLimitException
+import kotlinx.coroutines.yield
 import problem.Agent
 import problem.ClassicalMapf
 import problem.obj.Path
@@ -25,20 +26,16 @@ class CBS(
         )
     )
 
-    override fun solve(): SolutionWithCost? {
+    override suspend fun solve(): SolutionWithCost? {
         val agents = mapfProblem.agentsWithPaths.keys
 
         val openNodes = PriorityQueue(compareBy<CTNode> { it.depth }.thenByDescending { it.solutionSumOfCosts })
-        val rootNode = try {
-            createRootNode(agents)
-        } catch (e: RuntimeException) {
-            println(e)
-            return null
-        }
+        val rootNode = createRootNode(agents)
         openNodes.add(rootNode)
 
         var processedStates = 0
         while (openNodes.isNotEmpty()) {
+            yield()
             val currentNode = openNodes.poll()
             processedStates++
 
@@ -52,12 +49,7 @@ class CBS(
                 return currentNode.toSolution()
             }
 
-            try {
-                createChildNodes(currentNode, conflict).forEach { openNodes.add(it) }
-            } catch (e: RuntimeException) {
-                println(e)
-                return null
-            }
+            createChildNodes(currentNode, conflict).forEach { openNodes.add(it) }
         }
         return null
     }
