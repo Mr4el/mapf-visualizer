@@ -1,6 +1,6 @@
 package problem.solver.cbs
 
-import exceptions.Exceptions.agentHasReachedWaitLimit
+import exceptions.Exceptions.agentHasReachedWaitLimitException
 import exceptions.ReachedWaitLimitException
 import kotlinx.coroutines.yield
 import problem.Agent
@@ -79,9 +79,12 @@ class CBS(
             val parentVertexConflicts = node.getVertexConflicts(agent).toSet()
             val parentEdgeConflicts = node.getEdgeConflicts(agent).toSet()
 
-            val allVertexConflicts =
-                additionalVertexConflict?.let { parentVertexConflicts + it } ?: parentVertexConflicts
-            val allEdgeConflicts = additionalEdgeConflict?.let { parentEdgeConflicts + it } ?: parentEdgeConflicts
+            val allVertexConflicts = additionalVertexConflict
+                ?.let { parentVertexConflicts + it }
+                ?: parentVertexConflicts
+            val allEdgeConflicts = additionalEdgeConflict
+                ?.let { parentEdgeConflicts + it }
+                ?: parentEdgeConflicts
 
             val correctedPath = try {
                 singleAgentSolver.findPath(
@@ -90,7 +93,7 @@ class CBS(
                     edgeConflicts = allEdgeConflicts,
                 )
             } catch (e: ReachedWaitLimitException) {
-                throw agentHasReachedWaitLimit(e.limit)
+                throw agentHasReachedWaitLimitException(e.limit)
             } catch (e: RuntimeException) {
 //                println("$e State invalidated, but still running!")
                 return@mapNotNull null

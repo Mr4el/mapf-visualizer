@@ -20,8 +20,9 @@ fun positiveNumberInputField(
     enabled: Boolean = true,
     onSubmit: (Int) -> Unit,
 ) {
+    val currentInitialValue by rememberUpdatedState(initialValue)
     var number by remember { mutableStateOf(0) }
-    var tempInput by remember { mutableStateOf(initialValue.toString()) }
+    var tempInput by remember { mutableStateOf(currentInitialValue.toString()) }
 
     fun applyChanges() {
         tempInput.toIntOrNull()?.let { newValue ->
@@ -30,6 +31,11 @@ fun positiveNumberInputField(
             tempInput = number.toString()
             onSubmit(number)
         }
+    }
+
+    LaunchedEffect(currentInitialValue) {
+        number = currentInitialValue
+        tempInput = currentInitialValue.toString()
     }
 
     TextField(

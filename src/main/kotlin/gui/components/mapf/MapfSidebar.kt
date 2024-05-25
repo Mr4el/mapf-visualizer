@@ -16,9 +16,14 @@ import gui.components.elements.*
 import enums.AvailableSolver
 import enums.AvailableSolver.Companion.fromName
 import enums.GridMode
+import gui.Constants.GRID_SIZE_LIMIT
 import gui.style.CustomColors.DARK_BACKGROUND_COLOR
 import gui.utils.Utils.formatAsElapsedTime
+import gui.utils.Utils.generateExportMapName
 import problem.ClassicalMapf
+import java.awt.FileDialog
+import java.awt.Frame
+import java.io.File
 import kotlin.math.round
 
 @Composable
@@ -29,6 +34,7 @@ fun mapfSidebar(
     isDraggableEnabled: Boolean,
     waitingForSolution: Boolean,
     exceptionDescription: String? = null,
+    notificationDescription: String? = null,
     onUpdateDraggableState: (Boolean) -> Unit,
     onUpdateWaitingActionsCountLimit: (Int) -> Unit,
     onUpdateAutoplaySpeed: (Int) -> Unit,
@@ -39,6 +45,9 @@ fun mapfSidebar(
     onSolverSelected: (AvailableSolver) -> Unit,
     onSolveProblem: () -> Unit,
     onStopFindingSolution: () -> Unit,
+    onProblemImport: (String) -> Unit,
+    onAgentsImport: (String, String) -> Unit,
+    onSolutionImport: (String, String) -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxHeight()
@@ -72,6 +81,7 @@ fun mapfSidebar(
                     }
                     mapfState.waitingForSolution -> "Time elapsed: ${problemSolvingTime.formatAsElapsedTime()}"
                     exceptionDescription != null -> exceptionDescription
+                    notificationDescription != null -> notificationDescription
                     else -> ""
                 },
                 fontSize = 18.sp,
@@ -190,29 +200,104 @@ fun mapfSidebar(
             )
 
             val exportOptions = listOf(
-                "Problem" to true,
+                "Map only" to true,
+                "Scenario" to true,
                 "Solution" to mapfState.hasSolution(),
             )
+
+            var fileExtension by remember { mutableStateOf("") }
+            var filePath by remember { mutableStateOf<String?>(null) }
+            var fileContent by remember { mutableStateOf("") }
 
             expandedButton(
                 text = "Import",
                 width = 190.dp,
-                icon = painterResource("icons/agent.svg"),
+                icon = painterResource("icons/import.svg"),
                 enabled = !waitingForSolution,
                 options = importOptions,
                 onClick = { option ->
-                    println("Import $option")
+                    val fileDialog = FileDialog(Frame(), "Select MAPF $option", FileDialog.LOAD).apply {
+                        file = when (option) {
+                            "Problem" -> "*.map;*.scen"
+                            "Solution" -> "*.solution"
+                            else -> return@expandedButton
+                        }
+                    }
+                    fileDialog.isVisible = true
+
+                    if (fileDialog.file != null) {
+                        filePath = fileDialog.directory + fileDialog.file
+                        val foundFile = File(filePath!!)
+                        fileExtension = foundFile.name.substringAfterLast('.', "")
+                        fileContent = File(filePath!!).readText()
+
+                        if (option == "Problem") {
+                            when (fileExtension) {
+                                "map" -> onProblemImport(fileContent)
+                                "scen" -> onAgentsImport(fileDialog.directory, fileContent)
+                                else -> {}
+                            }
+                        } else {
+                            onSolutionImport(fileDialog.directory, fileContent)
+                        }
+                    }
                 },
             )
+
+            fun chooseFileToSave(reason: String, fileName: String): File? {
+                val fileDialog = FileDialog(null as Frame?, "Save $reason File", FileDialog.SAVE)
+                fileDialog.file = fileName
+                fileDialog.isVisible = true
+                return if (fileDialog.file != null) {
+                    File(fileDialog.directory, fileDialog.file)
+                } else {
+                    null
+                }
+            }
+
+            fun chooseDirectoryToSave(reason: String, fileName: String): Pair<String, String>? {
+                val fileDialog = FileDialog(null as Frame?, "Select Directory to Save $reason", FileDialog.LOAD)
+                fileDialog.file = fileName
+                fileDialog.isVisible = true
+                return if (fileDialog.directory != null) {
+                    fileDialog.directory to fileDialog.file
+                } else {
+                    null
+                }
+            }
 
             expandedButton(
                 text = "Export",
                 width = 190.dp,
-                icon = painterResource("icons/agent.svg"),
+                icon = painterResource("icons/export.svg"),
                 enabled = !waitingForSolution,
                 options = exportOptions,
                 onClick = { option ->
-                    println("Export $option")
+                    when (option) {
+                        "Map only" -> {
+                            val mapFileName = "${mapfState.generateExportMapName()}.map"
+                            chooseFileToSave(option, mapFileName)?.writeText(mapfState.exportProblem())
+                        }
+                        "Scenario" -> {
+                            val fileName = mapfState.generateExportMapName()
+                            val scenarioFileName = "$fileName.scen"
+                            chooseDirectoryToSave(option, scenarioFileName)?.let { (path, scenarioFileName) ->
+                                val mapUpdatedName = scenarioFileName.replace(".scen", ".map")
+                                File(path, mapUpdatedName).writeText(mapfState.exportProblem())
+                                File(path, scenarioFileName).writeText(mapfState.exportAgents(mapUpdatedName))
+                            }
+                        }
+                        "Solution" -> {
+                            val fileName = mapfState.generateExportMapName()
+                            val solutionFileName = "$fileName.solution"
+                            chooseDirectoryToSave(option, solutionFileName)?.let { (path, solutionFileName) ->
+                                val mapUpdatedName = solutionFileName.replace(".solution", ".map")
+                                File(path, mapUpdatedName).writeText(mapfState.exportProblem())
+                                File(path, solutionFileName).writeText(mapfState.exportSolution(mapUpdatedName))
+                            }
+                        }
+                        else -> return@expandedButton
+                    }
                 },
             )
         }
@@ -315,7 +400,7 @@ fun mapfSidebar(
             positiveNumberInputField(
                 label = "Column count",
                 initialValue = mapfState.gridXSize,
-                maxNumber = 50,
+                maxNumber = GRID_SIZE_LIMIT,
                 width = 190.dp,
                 enabled = !waitingForSolution,
                 onSubmit = { newValue ->
@@ -327,7 +412,7 @@ fun mapfSidebar(
             positiveNumberInputField(
                 label = "Row count",
                 initialValue = mapfState.gridYSize,
-                maxNumber = 50,
+                maxNumber = GRID_SIZE_LIMIT,
                 width = 190.dp,
                 enabled = !waitingForSolution,
                 onSubmit = { newValue ->

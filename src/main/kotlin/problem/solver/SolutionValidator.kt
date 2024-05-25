@@ -9,8 +9,8 @@ import problem.solver.obj.Conflict
 object SolutionValidator {
 
     fun BasicSolution.findFirstConflict(
-        allowVertexConflict: Boolean,
-        allowSwapConflict: Boolean,
+        allowVertexConflict: Boolean = false,
+        allowSwapConflict: Boolean = false,
     ): Conflict? {
         if (allowVertexConflict && allowSwapConflict) return null
 

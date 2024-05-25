@@ -21,7 +21,7 @@ fun dropdownMenuComponent(
     onOptionSelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf("$selectedOption $targetName") }
+    var selectedOptionState by remember { mutableStateOf("$selectedOption $targetName") }
 
     Box {
         Button(
@@ -29,7 +29,7 @@ fun dropdownMenuComponent(
             onClick = { expanded = true },
             enabled = enabled,
         ) {
-            Text(selectedOption)
+            Text(selectedOptionState)
         }
 
         DropdownMenu(
@@ -39,7 +39,7 @@ fun dropdownMenuComponent(
         ) {
             options.forEach { option ->
                 DropdownMenuItem(onClick = {
-                    selectedOption = "$option $targetName"
+                    selectedOptionState = "$option $targetName"
                     onOptionSelected(option)
                     expanded = false
                 }) {

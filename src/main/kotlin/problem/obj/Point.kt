@@ -26,6 +26,10 @@ open class Point(
         return this.x == x && this.y == y
     }
 
+    open fun isAt(point: Point): Boolean {
+        return isAt(point.x, point.y)
+    }
+
     fun isInBoundaries(x: Int, y: Int): Boolean {
         return this.x in 0 until x && this.y in 0 until y
     }
@@ -51,7 +55,7 @@ open class Point(
     }
 
     override fun toString(): String {
-        return "x: $x; y:$y"
+        return "($x,$y)"
     }
 
     override fun equals(other: Any?): Boolean {

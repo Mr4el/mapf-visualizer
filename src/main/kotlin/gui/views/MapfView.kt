@@ -16,18 +16,14 @@ import gui.Constants.SCROLL_LAMBDA
 import gui.components.elements.draggableZoomableContainer
 import gui.components.elements.fpsCounter
 import gui.components.mapf.*
-import enums.AgentColor
 import enums.AvailableSolver
+import exceptions.Exceptions.missingMapFileException
 import gui.style.CustomColors.BACKGROUND_COLOR
-import gui.utils.ColorPicker
 import gui.utils.Utils.updateFps
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
-import problem.Agent
 import problem.ClassicalMapf
-import problem.Obstacle
-import problem.obj.Point
-import problem.obj.Path
+import java.io.File
 import java.lang.System.currentTimeMillis
 import java.lang.System.nanoTime
 import kotlin.system.measureTimeMillis
@@ -35,48 +31,9 @@ import kotlin.system.measureTimeMillis
 @Composable
 @Preview
 fun mapfView() {
-    val classicalMapfProblem = ClassicalMapf(
-        gridXSize = 10,
-        gridYSize = 10,
-        solutionCostMakespan = null,
-        obstacles = mutableSetOf(Obstacle(1, 2), Obstacle(3, 0)),
-        agentsWithPaths = mutableMapOf(
-            Agent(
-                name = "1",
-                primaryColor = AgentColor.ORANGE.primaryArgb,
-                secondaryColor = AgentColor.ORANGE.secondaryArgb,
-                startPosition = Point(1, 0),
-                targetPosition = Point(2, 3),
-            ) to Path(Point(1, 0)),
-//            ) to Path(Point(1, 0), Point(2, 0), Point(2, 1), Point(2, 2), Point(2, 3)),
-//            ) to Path(Point(2, 3), Point(2, 2), Point(2, 1), Point(2, 0), Point(1, 0)),
-//            ) to Path(Point(4, 0), Point(4, 1), Point(5, 1), Point(4, 1), Point(4, 2), Point(4, 3), Point(4, 2), Point(3, 2)),
-            Agent(
-                name = "2",
-                primaryColor = AgentColor.GREEN.primaryArgb,
-                secondaryColor = AgentColor.GREEN.secondaryArgb,
-                startPosition = Point(0, 3),
-                targetPosition = Point(3, 1),
-            ) to Path(Point(0, 3)),
-//            ) to Path(Point(0, 3), Point(1, 3), Point(2, 3), Point(3, 3), Point(3, 2), Point(3, 1)),
-//            ) to Path(Point(3, 1), Point(3, 2), Point(3, 3), Point(2, 3), Point(1, 3), Point(0, 3)),
-            Agent(
-                name = "3",
-                primaryColor = AgentColor.RED.primaryArgb,
-                secondaryColor = AgentColor.RED.secondaryArgb,
-                startPosition = Point(2, 1),
-                targetPosition = Point(0, 2),
-            ) to Path(Point(2, 1)),
-//            ) to Path(Point(2, 1), Point(1, 1), Point(0, 1), Point(0, 2)),
-//            ) to Path(Point(0, 2), Point(0, 1), Point(1, 1), Point(2, 1)),
-        ),
-        colorPicker = ColorPicker(AgentColor.ORANGE, AgentColor.GREEN, AgentColor.RED)
-    )
-
-
     val scaleState = mutableStateOf(DEFAULT_SCALE)
     val offsetState = remember { mutableStateOf(Offset.Zero) }
-    var mapfState by remember { mutableStateOf(classicalMapfProblem) }
+    var mapfState by remember { mutableStateOf(ClassicalMapf()) }
     var mapfSolver by remember { mutableStateOf(AvailableSolver.CBS) }
 
     val mapfJob = remember { MutableStateFlow<Job?>(null) }
@@ -169,7 +126,7 @@ fun mapfView() {
     }
 
     fun solveProblem() {
-        if(!mapfState.hasSolution()) {
+        if (!mapfState.hasSolution()) {
             mapfState = mapfState.apply { waitingForSolution = true }
             startTime = currentTimeMillis()
 
@@ -197,6 +154,54 @@ fun mapfView() {
             waitingForSolution = false
         }
         println("The search for a solution was interrupted manually!")
+    }
+
+    fun importProblem(problem: String) {
+        try {
+            clearField()
+            mapfState.importProblem(problem)
+        } catch (e: Exception) {
+            mapfState.notificationDescription = e.message
+        }
+        mapfState = mapfState.copy()
+    }
+
+    fun importAgents(fileDirectory: String, agents: String) {
+        try {
+            val mapFileContent = try {
+                val mapFileName = agents.lines()[1].split("\t")[1]
+                val filePath = fileDirectory + mapFileName
+                File(filePath).readText()
+            } catch (e: Exception) {
+                throw missingMapFileException()
+            }
+
+            clearField()
+            mapfState.importProblem(mapFileContent)
+            mapfState.importAgents(agents)
+        } catch (e: Exception) {
+            mapfState.notificationDescription = e.message
+        }
+        mapfState = mapfState.copy()
+    }
+
+    fun importSolution(fileDirectory: String, solution: String) {
+        try {
+            val mapFileContent = try {
+                val mapFileName = solution.lines()[3].split("\t")[1]
+                val filePath = fileDirectory + mapFileName
+                File(filePath).readText()
+            } catch (e: Exception) {
+                throw missingMapFileException()
+            }
+
+            clearField()
+            mapfState.importProblem(mapFileContent)
+            mapfState.importSolution(solution)
+        } catch (e: Exception) {
+            mapfState.notificationDescription = e.message
+        }
+        mapfState = mapfState.copy()
     }
 
 
@@ -244,6 +249,7 @@ fun mapfView() {
                 isDraggableEnabled = isDraggableEnabled,
                 waitingForSolution = mapfState.waitingForSolution,
                 exceptionDescription = mapfState.exceptionDescription,
+                notificationDescription = mapfState.notificationDescription,
                 onUpdateAllowSwapConflict = { updateAllowSwapConflict(it) },
                 onUpdateAllowVertexConflict = { updateAllowVertexConflict(it) },
                 onUpdateDraggableState = { isDraggableEnabled = it },
@@ -254,6 +260,9 @@ fun mapfView() {
                 onSolverSelected = { mapfSolver = it },
                 onSolveProblem = { solveProblem() },
                 onStopFindingSolution = { abortSolving() },
+                onProblemImport = { importProblem(it) },
+                onAgentsImport = { fileDirectory, fileContent -> importAgents(fileDirectory, fileContent) },
+                onSolutionImport = { fileDirectory, fileContent -> importSolution(fileDirectory, fileContent) },
             )
         }
 

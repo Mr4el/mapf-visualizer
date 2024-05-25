@@ -3,6 +3,9 @@ package gui
 import java.lang.Math.PI
 
 object Constants {
+    // Limits
+    const val GRID_SIZE_LIMIT = 50
+
     // Display config
     const val CELL_SIZE_PX = 50f
 

@@ -91,9 +91,9 @@ fun <T> expandedButton(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            options.forEach { (option, enabled) ->
+            options.forEach { (option, optionIsEnabled) ->
                 DropdownMenuItem(
-                    enabled = enabled,
+                    enabled = optionIsEnabled,
                     onClick = {
                         expanded = false
                         onClick(option)

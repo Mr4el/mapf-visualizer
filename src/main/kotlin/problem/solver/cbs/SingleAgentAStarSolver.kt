@@ -1,6 +1,6 @@
 package problem.solver.cbs
 
-import exceptions.Exceptions.validPathForAgentNotFound
+import exceptions.Exceptions.validPathForAgentNotFoundException
 import exceptions.ReachedWaitLimitException
 import gui.utils.EdgeConflict
 import gui.utils.VertexConflict
@@ -90,7 +90,7 @@ class SingleAgentAStarSolver(
                 }
             }
         }
-        throw validPathForAgentNotFound(agent.name)
+        throw validPathForAgentNotFoundException(agent.name)
     }
 
     private fun generatePath(

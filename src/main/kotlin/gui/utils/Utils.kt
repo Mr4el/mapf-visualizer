@@ -1,6 +1,9 @@
 package gui.utils
 
 import androidx.compose.ui.graphics.Color
+import problem.ClassicalMapf
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 object Utils {
     fun updateFps(
@@ -43,5 +46,16 @@ object Utils {
         val newBlue = (blue + (255 - blue) * factor).toInt().coerceIn(0, 255)
 
         return Color(alpha shl 24 or (newRed shl 16) or (newGreen shl 8) or newBlue)
+    }
+
+    fun ClassicalMapf.generateExportMapName(optionalPrefix: String? = null): String {
+        val prefix = optionalPrefix ?: getCurrentLocalTimeString()
+        return "${prefix}_${gridXSize}-${gridYSize}-${agentsWithPaths.size}"
+    }
+
+    private fun getCurrentLocalTimeString(): String {
+        val currentTime = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss")
+        return currentTime.format(formatter)
     }
 }
