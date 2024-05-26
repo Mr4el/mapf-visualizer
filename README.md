@@ -115,7 +115,7 @@ goal positions while avoiding collisions.
     ```
     version 1
     makespan 5
-    sumOfCosts 13
+    sumOfCosts 5
     0	my_custom_map.map	1	0	2	3	(1,0) (2,0) (2,1) (2,1) (2,2) (2,3)
     ```
 
