@@ -82,12 +82,13 @@ and agent locations, as well as the solution itself.
 ### Creating a Scenario
 - **Define Agents and Goals**: Specify the start and goal positions for each agent.
 - **Set Obstacles**: Place obstacles in the grid to create more complex scenarios.
-- **Remove Agents and Obstacles**: When the appropriate mode is selected, tap again on the agent's start or 
-end point or on an obstacle to remove it
+- **Remove Agents and Obstacles**: When the appropriate mode is selected, tap again on 
+the agent's start or end point or on an obstacle to remove it.
 
 ### Running a Simulation
 - **Choose Algorithm**: Select the desired algorithm for pathfinding from the provided options.
-- **Simulate**: Run the simulation to see the agents move from their start positions to their goal positions while avoiding collisions.
+- **Simulate**: Run the simulation to see the agents move from their start positions to their 
+goal positions while avoiding collisions.
 
 ### Visualization Controls
 - **Play/Pause**: Start or pause the simulation.
@@ -95,8 +96,8 @@ end point or on an obstacle to remove it
 - **Adjust Speed**: Change the speed of the simulation for better visualization.
 
 ### Configuration of settings
-- **Enter value**: Enter the desired numeric value
-- **Apply changes**: Press Enter or take the focus off the input field
+- **Enter value**: Enter the desired numeric value.
+- **Apply changes**: Press Enter or take the focus off the input field.
 
 ## Import/Export file format
 - The `.map` and `.scen` files are formatted to match the benchmarks presented [here](https://movingai.com/benchmarks/mapf/index.html).  
