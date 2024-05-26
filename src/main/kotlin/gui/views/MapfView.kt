@@ -228,8 +228,10 @@ fun mapfView() {
                         scale = scale,
                         obstacles = mapfState.obstacles,
                         onClick = { x, y ->
-                            mapfState.onGridClick(x, y)
-                            mapfState = mapfState.copy()
+                            if (!mapfState.waitingForSolution) {
+                                mapfState.onGridClick(x, y)
+                                mapfState = mapfState.copy()
+                            }
                         },
                     )
 
