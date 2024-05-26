@@ -82,7 +82,7 @@ and agent locations, as well as the solution itself.
 ### Creating a Scenario
 - **Define Agents and Goals**: Specify the start and goal positions for each agent.
 - **Set Obstacles**: Place obstacles in the grid to create more complex scenarios.
-- *Remove Agents and Obstacles**: When the appropriate mode is selected, tap again on the agent's start or 
+- **Remove Agents and Obstacles**: When the appropriate mode is selected, tap again on the agent's start or 
 end point or on an obstacle to remove it
 
 ### Running a Simulation
