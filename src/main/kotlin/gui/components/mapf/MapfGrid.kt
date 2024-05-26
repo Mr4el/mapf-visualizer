@@ -123,33 +123,3 @@ fun getBackgroundColor(isObstacle: Boolean, isHovered: Boolean): Color {
 //        }
 //    }
 //}
-
-//@Composable
-//fun mapfGridTest(
-//    gridXSize: Int,
-//    gridYSize: Int,
-//    scaledCellSize: Dp,
-//    scale: Float,
-//    obstacles: Set<Obstacle>,
-//    onClick: (Int, Int) -> Unit,
-//) {
-//    LazyVerticalGrid(
-//        userScrollEnabled = false,
-//        columns = GridCells.Fixed(gridXSize),
-//    ) {
-//        items(gridYSize * gridXSize) { index ->
-//            val y = index / gridXSize
-//            val x = index % gridXSize
-//
-//            val cellColor =  if (obstacles.hasObstacleAt(x, y)) DARK_GRAY else WHITE
-//
-//            Box(
-//                modifier = Modifier
-//                    .size(scaledCellSize)
-//                    .background(cellColor)
-//                    .border(1.dp * scale, BLACK)
-//                    .clickable { onClick(x, y) }
-//            )
-//        }
-//    }
-//}
