@@ -2,6 +2,7 @@ package problem.solver.cbs
 
 import exceptions.Exceptions.validPathForAgentNotFoundException
 import exceptions.ReachedWaitLimitException
+import gui.Constants.A_STAR_STATE_LIMIT
 import gui.utils.EdgeConflict
 import gui.utils.VertexConflict
 import problem.obj.Agent
@@ -29,9 +30,11 @@ class SingleAgentAStarSolver(
         )
 
         val cameFrom = HashMap<AStarVertexState, AStarVertexState>()
-        val closedSet = HashSet<Point>()
+        val closedSet = HashSet<AStarVertexState>()
         val openSet = HashSet<AStarVertexState>()
-        val queue = PriorityQueue(compareBy<AStarVertexState> { it.fScore }.thenBy { it.timeStep })
+        val queue = PriorityQueue(
+            compareBy<AStarVertexState> { it.fScore }.thenBy { it.timeStep }
+        )
 
         val initialAStarVertexState = AStarVertexState(
             position = agent.startPosition,
@@ -50,14 +53,20 @@ class SingleAgentAStarSolver(
             }
 
             openSet.remove(currentVertexState)
-            closedSet.add(currentVertexState.position)
+            closedSet.add(currentVertexState)
 
             val possibleActions = graph.getNeighbors(currentVertexState.position) + currentVertexState.position
             for (nextPosition in possibleActions) {
                 val nextTimeStep = currentVertexState.timeStep + 1
 
-                val vertexAtTimeStep = Pair(nextPosition, nextTimeStep)
-                val edgeAtTimeStep = Pair(Pair(currentVertexState.position, nextPosition), currentVertexState.timeStep)
+                val vertexAtTimeStep = Pair(
+                    nextPosition,
+                    nextTimeStep,
+                )
+                val edgeAtTimeStep = Pair(
+                    Pair(currentVertexState.position, nextPosition),
+                    currentVertexState.timeStep,
+                )
 
                 val hasVertexConflict = vertexConflicts.containsVertex(vertexAtTimeStep)
                 val hasEdgeConflict = edgeConflicts.containsEdge(edgeAtTimeStep)
@@ -75,10 +84,14 @@ class SingleAgentAStarSolver(
                     hScore = heuristic(nextPosition, agent.targetPosition)
                 )
 
+                if (closedSet.contains(nextAStarVertexState)) {
+                    continue
+                }
+
                 if (
                     nextAStarVertexState !in openSet
-                    && nextAStarVertexState.position !in closedSet
-                    && closedSet.size < graph.size()
+                    && nextAStarVertexState !in closedSet
+                    && closedSet.size <= A_STAR_STATE_LIMIT
                 ) {
                     cameFrom[nextAStarVertexState] = currentVertexState
                     queue.add(nextAStarVertexState)

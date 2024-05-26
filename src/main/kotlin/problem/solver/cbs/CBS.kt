@@ -4,10 +4,7 @@ import exceptions.Exceptions.agentHasReachedWaitLimitException
 import exceptions.ReachedWaitLimitException
 import gui.utils.EdgeConflict
 import gui.utils.VertexConflict
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.yield
+import kotlinx.coroutines.*
 import problem.obj.Agent
 import problem.ClassicalMapf
 import problem.obj.Path
@@ -18,6 +15,7 @@ import problem.solver.SolutionValidator.findFirstConflict
 import problem.solver.obj.SolutionWithCost
 import problem.solver.obj.Solver
 import java.util.PriorityQueue
+import java.util.concurrent.ConcurrentHashMap
 
 class CBS(
     private val mapfProblem: ClassicalMapf,
@@ -34,7 +32,7 @@ class CBS(
     override suspend fun solve(): SolutionWithCost? {
         val agents = mapfProblem.agentsWithPaths.keys
 
-        val openNodes = PriorityQueue(compareBy<CTNode> { it.solutionSumOfCosts }.thenByDescending { it.depth })
+        val openNodes = PriorityQueue(compareBy<CTNode> { it.depth }.thenBy { it.solutionSumOfCosts })
         val rootNode = createRootNode(agents)
         openNodes.add(rootNode)
 
@@ -60,7 +58,7 @@ class CBS(
     }
 
     private fun createRootNode(agents: Set<Agent>): CTNode {
-        val solution = calculatePaths(agents)
+        val solution = runBlocking { calculatePaths(agents) }
 
         return CTNode(
             agent = agents.first(),
@@ -70,7 +68,10 @@ class CBS(
         )
     }
 
-    private fun createChildNodes(node: CTNode, conflict: Conflict): List<CTNode> = runBlocking {
+    private suspend fun createChildNodes(
+        node: CTNode,
+        conflict: Conflict
+    ): List<CTNode> = coroutineScope {
         val additionalVertexConflict = conflict.toVertexConflict()
         val additionalEdgeConflict = conflict.toEdgeConflict()
 
@@ -114,15 +115,15 @@ class CBS(
             }
         }
 
-        return@runBlocking tasks.awaitAll().filterNotNull()
+        return@coroutineScope tasks.awaitAll().filterNotNull()
     }
 
-    private fun calculatePaths(
+    private suspend fun calculatePaths(
         agents: Set<Agent>,
         vertexConflicts: Set<VertexConflict> = emptySet(),
         edgeConflicts: Set<EdgeConflict> = emptySet(),
-    ): MutableMap<Agent, Path> = runBlocking {
-        val solution = mutableMapOf<Agent, Path>()
+    ): MutableMap<Agent, Path> = coroutineScope {
+        val solution = ConcurrentHashMap<Agent, Path>()
 
         val tasks = agents.map { agent ->
             async {
@@ -132,14 +133,11 @@ class CBS(
                     vertexConflicts = vertexConflicts,
                     edgeConflicts = edgeConflicts
                 )
-                agent to path
+                solution[agent] = path
             }
         }
 
-        tasks.awaitAll().forEach { (agent, path) ->
-            solution[agent] = path
-        }
-
-        return@runBlocking solution
+        tasks.awaitAll()
+        return@coroutineScope solution
     }
 }

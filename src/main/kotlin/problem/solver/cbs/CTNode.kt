@@ -16,29 +16,35 @@ class CTNode(
     private val vertexConflict: VertexConflict? = null,
     private val edgeConflict: EdgeConflict? = null,
 ) {
+    val depth: Int = (parent?.depth ?: 0) + 1
+
     fun toSolution() = SolutionWithCost(
         solution = solution,
         sumOfCosts = solutionSumOfCosts,
         makespan = solutionMakespan
     )
 
-    fun getVertexConflicts(agent: Agent): Sequence<VertexConflict> = sequence {
-        if (this@CTNode.agent == agent && vertexConflict != null) {
-            yield(vertexConflict)
+    fun getVertexConflicts(agent: Agent): List<VertexConflict> {
+        val conflicts = mutableListOf<VertexConflict>()
+        var current: CTNode? = this
+        while (current != null) {
+            if (current.agent == agent && current.vertexConflict != null) {
+                 conflicts.add(current.vertexConflict!!)
+            }
+            current = current.parent
         }
-        parent?.let {
-            yieldAll(it.getVertexConflicts(agent))
-        }
+        return conflicts
     }
 
-    fun getEdgeConflicts(agent: Agent): Sequence<EdgeConflict> = sequence {
-        if (this@CTNode.agent == agent && edgeConflict != null) {
-            yield(edgeConflict)
+    fun getEdgeConflicts(agent: Agent): List<EdgeConflict> {
+        val conflicts = mutableListOf<EdgeConflict>()
+        var current: CTNode? = this
+        while (current != null) {
+            if (current.agent == agent && current.edgeConflict != null) {
+                conflicts.add(current.edgeConflict!!)
+            }
+            current = current.parent
         }
-        parent?.let {
-            yieldAll(it.getEdgeConflicts(agent))
-        }
+        return conflicts
     }
-
-    val depth: Int = parent?.depth?.plus(1) ?: 0
 }

@@ -5,6 +5,7 @@ import java.lang.Math.PI
 object Constants {
     // Limits
     const val GRID_SIZE_LIMIT = 50
+    const val A_STAR_STATE_LIMIT = 10000
 
     // Display config
     const val CELL_SIZE_PX = 50f
