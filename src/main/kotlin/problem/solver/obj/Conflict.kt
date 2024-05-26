@@ -2,7 +2,7 @@ package problem.solver.obj
 
 import gui.utils.EdgeConflict
 import gui.utils.VertexConflict
-import problem.Agent
+import problem.obj.Agent
 import problem.obj.Point
 
 data class Conflict(
@@ -18,8 +18,7 @@ data class Conflict(
         EDGE,
     }
 
-    private fun isVertexConflict() = conflictType == Type.VERTEX
-    private fun isEdgeConflict() = conflictType == Type.EDGE
+    val conflictingAgents = listOf(firstAgent, secondAgent)
 
     fun toVertexConflict(): VertexConflict? {
         return if (isVertexConflict()) {
@@ -32,4 +31,7 @@ data class Conflict(
             Pair(Pair(conflictFirstAgentLocation, conflictSecondAgentLocation), timeStep)
         } else null
     }
+
+    private fun isVertexConflict() = conflictType == Type.VERTEX
+    private fun isEdgeConflict() = conflictType == Type.EDGE
 }

@@ -1,6 +1,5 @@
-package problem
+package problem.obj
 
-import problem.obj.Point
 import androidx.compose.ui.graphics.Color
 import gui.style.CustomColors.DARK_GRAY
 import gui.style.CustomColors.LIGHT_GRAY

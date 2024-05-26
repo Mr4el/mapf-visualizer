@@ -1,6 +1,4 @@
-package problem
-
-import problem.obj.Point
+package problem.obj
 
 class Obstacle(
     x: Int,

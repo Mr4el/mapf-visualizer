@@ -4,7 +4,7 @@ import exceptions.Exceptions.validPathForAgentNotFoundException
 import exceptions.ReachedWaitLimitException
 import gui.utils.EdgeConflict
 import gui.utils.VertexConflict
-import problem.Agent
+import problem.obj.Agent
 import problem.obj.Graph
 import problem.obj.Path
 import problem.obj.Point
@@ -29,8 +29,8 @@ class SingleAgentAStarSolver(
         )
 
         val cameFrom = HashMap<AStarVertexState, AStarVertexState>()
-        val closedSet = hashSetOf<AStarVertexState>()
-        val openSet = hashSetOf<AStarVertexState>()
+        val closedSet = HashSet<Point>()
+        val openSet = HashSet<AStarVertexState>()
         val queue = PriorityQueue(compareBy<AStarVertexState> { it.fScore }.thenBy { it.timeStep })
 
         val initialAStarVertexState = AStarVertexState(
@@ -50,39 +50,35 @@ class SingleAgentAStarSolver(
             }
 
             openSet.remove(currentVertexState)
-            closedSet.add(currentVertexState)
+            closedSet.add(currentVertexState.position)
 
-            val neighbors = graph.getNeighbors(currentVertexState.position) + currentVertexState.position
-            neighbors.forEach { neighborVertexPosition ->
-                val nextAStarVertexState = AStarVertexState(
-                    position = neighborVertexPosition,
-                    timeStep = currentVertexState.timeStep + 1,
-                    gScore = currentVertexState.gScore + 1,
-                    hScore = heuristic(neighborVertexPosition, agent.targetPosition)
-                )
+            val possibleActions = graph.getNeighbors(currentVertexState.position) + currentVertexState.position
+            for (nextPosition in possibleActions) {
+                val nextTimeStep = currentVertexState.timeStep + 1
 
-                val vertexAtTimeStep = Pair(
-                    neighborVertexPosition,
-                    nextAStarVertexState.timeStep,
-                )
-                val edgeAtTimeStep = Pair(
-                    Pair(currentVertexState.position, neighborVertexPosition),
-                    currentVertexState.timeStep,
-                )
+                val vertexAtTimeStep = Pair(nextPosition, nextTimeStep)
+                val edgeAtTimeStep = Pair(Pair(currentVertexState.position, nextPosition), currentVertexState.timeStep)
 
                 val hasVertexConflict = vertexConflicts.containsVertex(vertexAtTimeStep)
                 val hasEdgeConflict = edgeConflicts.containsEdge(edgeAtTimeStep)
-                val stateAlreadyProcessed = closedSet.contains(nextAStarVertexState)
-                val freeConflictingTargetCell = nextAStarVertexState.position.equal(agent.targetPosition)
-                    && nextAStarVertexState.timeStep <= maxConflictTimeStep
-                if (hasVertexConflict || hasEdgeConflict || freeConflictingTargetCell || stateAlreadyProcessed) {
-                    return@forEach
+                val freeConflictingTargetCell = nextPosition.equal(agent.targetPosition)
+                    && nextTimeStep <= maxConflictTimeStep
+
+                if (hasVertexConflict || hasEdgeConflict || freeConflictingTargetCell) {
+                    continue
                 }
+
+                val nextAStarVertexState = AStarVertexState(
+                    position = nextPosition,
+                    timeStep = nextTimeStep,
+                    gScore = currentVertexState.gScore + 1,
+                    hScore = heuristic(nextPosition, agent.targetPosition)
+                )
 
                 if (
                     nextAStarVertexState !in openSet
-                    && nextAStarVertexState !in closedSet
-                    && nextAStarVertexState.timeStep < graph.size()
+                    && nextAStarVertexState.position !in closedSet
+                    && closedSet.size < graph.size()
                 ) {
                     cameFrom[nextAStarVertexState] = currentVertexState
                     queue.add(nextAStarVertexState)

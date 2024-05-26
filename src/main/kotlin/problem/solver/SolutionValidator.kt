@@ -1,7 +1,7 @@
 package problem.solver
 
 import gui.utils.BasicSolution
-import problem.Agent
+import problem.obj.Agent
 import problem.obj.Path.Companion.getMakespan
 import problem.obj.Point
 import problem.solver.obj.Conflict

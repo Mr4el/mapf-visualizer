@@ -2,16 +2,21 @@ package problem.solver.cbs
 
 import exceptions.Exceptions.agentHasReachedWaitLimitException
 import exceptions.ReachedWaitLimitException
+import gui.utils.EdgeConflict
+import gui.utils.VertexConflict
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.yield
-import problem.Agent
+import problem.obj.Agent
 import problem.ClassicalMapf
 import problem.obj.Path
 import problem.obj.Path.Companion.getMakespan
 import problem.obj.Path.Companion.getSumOfCosts
 import problem.solver.obj.Conflict
 import problem.solver.SolutionValidator.findFirstConflict
-import problem.solver.SolutionWithCost
-import problem.solver.Solver
+import problem.solver.obj.SolutionWithCost
+import problem.solver.obj.Solver
 import java.util.PriorityQueue
 
 class CBS(
@@ -29,23 +34,23 @@ class CBS(
     override suspend fun solve(): SolutionWithCost? {
         val agents = mapfProblem.agentsWithPaths.keys
 
-        val openNodes = PriorityQueue(compareBy<CTNode> { it.depth }.thenByDescending { it.solutionSumOfCosts })
+        val openNodes = PriorityQueue(compareBy<CTNode> { it.solutionSumOfCosts }.thenByDescending { it.depth })
         val rootNode = createRootNode(agents)
         openNodes.add(rootNode)
 
-        var processedStates = 0
+        var processedStatesCount = 0
         while (openNodes.isNotEmpty()) {
             yield()
             val currentNode = openNodes.poll()
-            processedStates++
+            processedStatesCount++
 
-            if (processedStates % 10000 == 0) println("Processed states: $processedStates")
+            if (processedStatesCount % 10000 == 0) println("Processed states: $processedStatesCount")
 
             val conflict = currentNode.solution.findFirstConflict(
                 allowVertexConflict = mapfProblem.allowVertexConflict,
                 allowSwapConflict = mapfProblem.allowSwapConflict,
             ) ?: run {
-                println("$processedStates states has been calculated")
+                println("$processedStatesCount states has been calculated")
                 return currentNode.toSolution()
             }
 
@@ -55,11 +60,7 @@ class CBS(
     }
 
     private fun createRootNode(agents: Set<Agent>): CTNode {
-        val solution = mutableMapOf<Agent, Path>()
-        agents.forEach { agent ->
-            val path = singleAgentSolver.findPath(agent, 0, emptySet(), emptySet())
-            solution[agent] = path
-        }
+        val solution = calculatePaths(agents)
 
         return CTNode(
             agent = agents.first(),
@@ -69,48 +70,76 @@ class CBS(
         )
     }
 
-    private fun createChildNodes(node: CTNode, conflict: Conflict): List<CTNode> {
-        val conflictingAgents = listOf(conflict.firstAgent, conflict.secondAgent)
+    private fun createChildNodes(node: CTNode, conflict: Conflict): List<CTNode> = runBlocking {
+        val additionalVertexConflict = conflict.toVertexConflict()
+        val additionalEdgeConflict = conflict.toEdgeConflict()
 
-        return conflictingAgents.mapNotNull { agent ->
-            val additionalVertexConflict = conflict.toVertexConflict()
-            val additionalEdgeConflict = conflict.toEdgeConflict()
+        val tasks = conflict.conflictingAgents.map { agent ->
+            async {
+                val parentVertexConflicts = node.getVertexConflicts(agent).toSet()
+                val parentEdgeConflicts = node.getEdgeConflicts(agent).toSet()
 
-            val parentVertexConflicts = node.getVertexConflicts(agent).toSet()
-            val parentEdgeConflicts = node.getEdgeConflicts(agent).toSet()
+                val allVertexConflicts = additionalVertexConflict
+                    ?.let { parentVertexConflicts + it }
+                    ?: parentVertexConflicts
+                val allEdgeConflicts = additionalEdgeConflict
+                    ?.let { parentEdgeConflicts + it }
+                    ?: parentEdgeConflicts
 
-            val allVertexConflicts = additionalVertexConflict
-                ?.let { parentVertexConflicts + it }
-                ?: parentVertexConflicts
-            val allEdgeConflicts = additionalEdgeConflict
-                ?.let { parentEdgeConflicts + it }
-                ?: parentEdgeConflicts
+                val correctedPath = try {
+                    singleAgentSolver.findPath(
+                        agent = agent,
+                        vertexConflicts = allVertexConflicts,
+                        edgeConflicts = allEdgeConflicts,
+                    )
+                } catch (e: ReachedWaitLimitException) {
+                    throw agentHasReachedWaitLimitException(e.limit)
+                } catch (e: RuntimeException) {
+                    return@async null
+                }
 
-            val correctedPath = try {
-                singleAgentSolver.findPath(
+                if (correctedPath == node.solution[agent]) return@async null
+                val newSolution = node.solution.toMutableMap()
+                newSolution[agent] = correctedPath
+
+                return@async CTNode(
+                    parent = node,
+                    vertexConflict = additionalVertexConflict,
+                    edgeConflict = additionalEdgeConflict,
                     agent = agent,
-                    vertexConflicts = allVertexConflicts,
-                    edgeConflicts = allEdgeConflicts,
+                    solution = newSolution,
+                    solutionSumOfCosts = newSolution.values.getSumOfCosts(),
+                    solutionMakespan = newSolution.values.getMakespan(),
                 )
-            } catch (e: ReachedWaitLimitException) {
-                throw agentHasReachedWaitLimitException(e.limit)
-            } catch (e: RuntimeException) {
-//                println("$e State invalidated, but still running!")
-                return@mapNotNull null
             }
-
-            val newSolution = node.solution.toMutableMap()
-            newSolution[agent] = correctedPath
-
-            return@mapNotNull CTNode(
-                parent = node,
-                vertexConflict = additionalVertexConflict,
-                edgeConflict = additionalEdgeConflict,
-                agent = agent,
-                solution = newSolution,
-                solutionSumOfCosts = newSolution.values.getSumOfCosts(),
-                solutionMakespan = newSolution.values.getMakespan(),
-            )
         }
+
+        return@runBlocking tasks.awaitAll().filterNotNull()
+    }
+
+    private fun calculatePaths(
+        agents: Set<Agent>,
+        vertexConflicts: Set<VertexConflict> = emptySet(),
+        edgeConflicts: Set<EdgeConflict> = emptySet(),
+    ): MutableMap<Agent, Path> = runBlocking {
+        val solution = mutableMapOf<Agent, Path>()
+
+        val tasks = agents.map { agent ->
+            async {
+                val path = singleAgentSolver.findPath(
+                    agent = agent,
+                    initialTimeStep = 0,
+                    vertexConflicts = vertexConflicts,
+                    edgeConflicts = edgeConflicts
+                )
+                agent to path
+            }
+        }
+
+        tasks.awaitAll().forEach { (agent, path) ->
+            solution[agent] = path
+        }
+
+        return@runBlocking solution
     }
 }

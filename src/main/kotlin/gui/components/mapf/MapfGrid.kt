@@ -21,8 +21,8 @@ import gui.style.CustomColors.DARKER_GRAY
 import gui.style.CustomColors.DARK_GRAY
 import gui.style.CustomColors.LIGHTER_GRAY
 import gui.style.CustomColors.WHITE
-import problem.Obstacle
-import problem.Obstacle.Companion.hasObstacleAt
+import problem.obj.Obstacle
+import problem.obj.Obstacle.Companion.hasObstacleAt
 import problem.obj.Point
 
 @OptIn(ExperimentalComposeUiApi::class)

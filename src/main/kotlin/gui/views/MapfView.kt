@@ -23,6 +23,9 @@ import gui.utils.Utils.updateFps
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import problem.ClassicalMapf
+import problem.ProblemImporter.importAgents
+import problem.ProblemImporter.importProblem
+import problem.ProblemImporter.importSolution
 import java.io.File
 import java.lang.System.currentTimeMillis
 import java.lang.System.nanoTime

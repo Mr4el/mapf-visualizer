@@ -33,7 +33,7 @@ import gui.Constants.CELL_SIZE_PX
 import gui.Constants.TRANSITION_DURATION_MS
 import gui.style.CustomColors.BLACK
 import kotlinx.coroutines.launch
-import problem.Agent
+import problem.obj.Agent
 import problem.obj.Point
 import problem.obj.Point.Companion.equal
 import problem.obj.Point.Companion.toGridCord

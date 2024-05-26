@@ -1,6 +1,6 @@
 package gui.utils
 
-import problem.Agent
+import problem.obj.Agent
 import problem.obj.Path
 import problem.obj.Point
 

@@ -10,13 +10,6 @@ class ColorPicker(
     private var predefinedColors: MutableSet<AgentColor> = ALL_DEFAULT_AGENT_COLORS.toMutableSet(),
     private var usedColors: MutableSet<Color> = mutableSetOf(),
 ) {
-    constructor(vararg usedColor: AgentColor) : this() {
-        usedColor.forEach {
-            setUsedColor(it.primaryArgb)
-            setUsedColor(it.secondaryArgb)
-        }
-    }
-
     fun getNextColor(): Pair<Color, Color> {
         val usedColors = if (predefinedColors.isNotEmpty()) {
             val color = predefinedColors.minBy { it.ordinal }

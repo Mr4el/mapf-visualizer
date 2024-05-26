@@ -3,8 +3,8 @@ package problem.solver.cbs
 import gui.utils.BasicSolution
 import gui.utils.EdgeConflict
 import gui.utils.VertexConflict
-import problem.Agent
-import problem.solver.SolutionWithCost
+import problem.obj.Agent
+import problem.solver.obj.SolutionWithCost
 
 class CTNode(
     val agent: Agent,

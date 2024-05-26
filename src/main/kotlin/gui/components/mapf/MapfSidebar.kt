@@ -21,6 +21,9 @@ import gui.style.CustomColors.DARK_BACKGROUND_COLOR
 import gui.utils.Utils.formatAsElapsedTime
 import gui.utils.Utils.generateExportMapName
 import problem.ClassicalMapf
+import problem.ProblemExporter.exportAgents
+import problem.ProblemExporter.exportProblem
+import problem.ProblemExporter.exportSolution
 import java.awt.FileDialog
 import java.awt.Frame
 import java.io.File
