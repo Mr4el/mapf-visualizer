@@ -29,6 +29,7 @@ and agent locations, as well as the solution itself.
 1. Latest version of [**Intellij Idea Community edition**](https://www.jetbrains.com/idea/download/#section=windows)
 2. Preinstalled [**Java 21**](https://www.oracle.com/java/technologies/downloads/#java21)
 3. Preinstalled [**Gradle 8.7.0**](https://gradle.org/install/)
+4. Preinstalled [**git**](https://git-scm.com/downloads)
 
 ## Installation
 - ### To install and run the Classical MAPF Visualizer using Windows console, follow these steps:
